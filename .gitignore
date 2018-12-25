@@ -1,0 +1,10 @@
+.vscode/
+node_modules
+logs
+*.log
+*.tgz
+build
+lib
+dist
+coverage
+reports
