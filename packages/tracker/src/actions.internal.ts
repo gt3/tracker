@@ -8,6 +8,7 @@ export const DISPATCH_PENDING_ANALYTICS_ACTIONS = `${ANALYTICS} DISPATCH_PENDING
 export const LOAD_ANALYTICS_DONE = `${ANALYTICS} LOAD_DONE`;
 export const INIT_ANALYTICS_DONE = `${ANALYTICS} INIT_DONE`;
 export const INIT_ANALYTICS_ERR = `${ANALYTICS} INIT_ERR`;
+export const BUFFERED_ANALYTICS_ACTIONS = `${ANALYTICS} BUFFERED_ACTIONS`;
 
 // document action types
 export const SET_PENDING_ANALYTICS_ACTION = `${ANALYTICS} SET_PENDING_ACTION`
@@ -35,4 +36,7 @@ export const setPendingAction = (action: AnalyticsAction) => ({
   meta: action
 });
 
-
+export const bufferedActions = (actions: AnalyticsAction[]) => ({
+  type: BUFFERED_ANALYTICS_ACTIONS,
+  meta: actions
+});
