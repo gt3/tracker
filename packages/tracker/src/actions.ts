@@ -1,6 +1,6 @@
 //types
 import { ClientInitSettings } from './client';
-import { AnalyticsTrackAction, TrackActionPayload, TrackActionPayloadWithState, AnalyticsTrackActionWithState } from './types';
+import { AnalyticsTrackAction, TrackActionPayload, AnalyticsTrackActionThunkable, UserData, EventData, UserDataThunkable, EventDataThunkable } from './types';
 
 // feature name
 export const ANALYTICS = '[Core.Analytics]';
@@ -23,12 +23,12 @@ export const init = (payload: ClientInitSettings) => {
   });
 };
 
-export const track = (payload: TrackActionPayload): AnalyticsTrackAction => ({
+export const track = (payload: TrackActionPayload<UserData, EventData>): AnalyticsTrackAction => ({
   type: TRACK_ANALYTICS,
   payload
 });
 
-export const trackWithState = (payload: TrackActionPayloadWithState): AnalyticsTrackActionWithState => ({
+export const trackWithState = (payload: TrackActionPayload<UserDataThunkable, EventDataThunkable>): AnalyticsTrackActionThunkable => ({
   type: TRACK_ANALYTICS_WITH_STATE,
   payload
 });

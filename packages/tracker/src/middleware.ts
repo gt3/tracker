@@ -2,13 +2,13 @@ import { Client, AppSettings, ClientInitSettings } from './client';
 import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track } from './actions';
 import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE } from './actions.internal';
 import { Store } from 'redux';
-import { AnalyticsAction, AnalyticsTrackAction, ValueThunk, AnalyticsTrackActionWithState, TrackActionPayload } from './types';
+import { AnalyticsAction, AnalyticsTrackAction, AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData } from './types';
 
 const resolveWithState = (state: any, data: any) => {
   let newData = data;
   if(data) {
     newData = Object.keys(data).reduce((acc: any, k) => {
-      const getData = data[k] as ValueThunk;
+      const getData = data[k];
       acc[k] = typeof data[k] === 'function' ? getData(state) : getData;
       return acc;
     }, {});
@@ -16,12 +16,12 @@ const resolveWithState = (state: any, data: any) => {
   return newData;
 }
 
-function resolveToTrackAction(action: AnalyticsTrackActionWithState, state: any): AnalyticsTrackAction {
+function resolveToTrackAction(action: AnalyticsTrackActionThunkable, state: any): AnalyticsTrackAction {
   if(!action.payload) {
     return track(action.payload);
   }
   const { userData, eventData, ...rest } = action.payload;
-  const newPayload: TrackActionPayload = {
+  const newPayload: TrackActionPayload<UserData, EventData> = {
     ...rest,
     userData: resolveWithState(state, userData),
     eventData: resolveWithState(state, eventData)
@@ -59,7 +59,7 @@ export function createAnalyticsMiddleware(appSettings: AppSettings, clientInitSe
         _client.track(dispatch, action as AnalyticsTrackAction);
       }
       else if(action.type === TRACK_ANALYTICS_WITH_STATE) {
-        dispatch(resolveToTrackAction(action as AnalyticsTrackActionWithState, getState()));
+        dispatch(resolveToTrackAction(action as AnalyticsTrackActionThunkable, getState()));
       }
     }
   }

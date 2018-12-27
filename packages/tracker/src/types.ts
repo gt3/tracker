@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { string, number } from 'prop-types';
+import { SerializeableRecord, SerializeablePrimitives, Serializable, ValueThunk } from './types.generic';
 
 export type Environments = 'development' | 'production';
 
@@ -8,52 +8,30 @@ export type AnalyticsAction = Action & {
   meta?: any;
 };
 
-export type SerializeablePrimitives = string | null | undefined | boolean | number;
-
-export type SerializeableRecord = 
-  Record<string, SerializeablePrimitives | SerializeablePrimitives[] | Record<string, SerializeablePrimitives | SerializeablePrimitives[]> | Record<string, SerializeablePrimitives | SerializeablePrimitives[]>[]>;
-
-const xxx: SerializeableRecord = { xxx: [ { xx: {} } ] };
-
-
-export type Serializeable = SerializeablePrimitives | SerializeablePrimitives[] | SerializeableRecord | SerializeableRecord[];
-
-export type ValueThunk = (state: any) => Serializeable;
-
-export type EventData = {
+export type EventData = SerializeableRecord<SerializeablePrimitives> & {
   eventName: string;
-  [key: string]: Serializeable;
 }
 
 export type EventDataThunkable = {
   eventName: string;
-  [key: string]: Serializeable | ValueThunk;
+  [key: string]: Serializable | ValueThunk<Serializable>;
 };
 
-export type UserData = Record<string, Serializeable>;
+export type UserData = SerializeableRecord<SerializeablePrimitives>;
 
-
-const e: EventData = {
-  eventName: '',
-  xxx: { xx: { x: [{}] } }
+export type UserDataThunkable = {
+  [key: string]: Serializable | ValueThunk<Serializable>;
 };
 
-export type UserDataWithState = UserData & ValueThunk;
-
-export type TrackActionPayload = {
-  userData?: UserData;
-  eventData?: EventData;
-}
-
-export type TrackActionPayloadWithState = {
-  userData?: UserDataWithState;
-  eventData?: EventDataThunkable;
+export type TrackActionPayload<T,U> = {
+  userData?: T;
+  eventData?: U;
 }
 
 export type AnalyticsTrackAction = Action & {
-  payload: TrackActionPayload;
+  payload: TrackActionPayload<UserData, EventData>
 }
 
-export type AnalyticsTrackActionWithState = Action & {
-  payload: TrackActionPayloadWithState;
+export type AnalyticsTrackActionThunkable = Action & {
+  payload: TrackActionPayload<UserDataThunkable, EventDataThunkable>
 }
