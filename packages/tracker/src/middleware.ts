@@ -69,7 +69,7 @@ const dispatchBuffer = () => {
   return dispatcher;
 }
 
-export function createAnalyticsMiddleware(appSettings: AppSettings, clientInitSettings: ClientInitSettings) {
+export function createAnalyticsMiddleware(appSettings: AppSettings, getClientInitSettings: () => Promise<ClientInitSettings>) {
   const _client = new Client(appSettings);
   return (store: { dispatch: any, getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
@@ -80,8 +80,10 @@ export function createAnalyticsMiddleware(appSettings: AppSettings, clientInitSe
       }
       else if (action.type === LOAD_ANALYTICS_DONE) {
         _client.loadDone();
-        bufferDispatch(Promise.resolve(init(clientInitSettings)));
-        bufferDispatch(Promise.resolve(dispatchPendingActions()));
+        const initDispatchPromise = getClientInitSettings().then(clientInitSettings => {
+          return [init(clientInitSettings), dispatchPendingActions()];
+        }, () => null);
+        bufferDispatch(initDispatchPromise);
       }
       else if (action.type === INIT_ANALYTICS) {
         bufferDispatch(_client.init(action));
@@ -129,27 +131,10 @@ export function buferedActionsEnhanceReducer(reducer: Reducer) {
 	};
 }
 
-/* export function multipleActionsEnhanceDispatch(dispatch: any) {
-	return (action: any) => {
-		var multipleAction;
-    const { type, meta } = action;
-		if (type === BUFFERED_ANALYTICS_ACTIONS) {
-			//const bufferedActionType = meta.map((a) => a.type).join(' => ');
-			multipleAction = {
-				type,
-				actions: action
-			};
-		}
-
-		return dispatch(multipleAction || action);
-	};
-} */
-
-export function trackerStoreEnhancer(appSettings: AppSettings, clientInitSettings: ClientInitSettings) {
-  const middleware = createAnalyticsMiddleware(appSettings, clientInitSettings);
+export function trackerStoreEnhancer(appSettings: AppSettings, getClientInitSettings: () => Promise<ClientInitSettings>) {
+  const middleware = createAnalyticsMiddleware(appSettings, getClientInitSettings);
 	return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
 		let store = createStore(buferedActionsEnhanceReducer(reducer), initialState, ...args);
-    // store.dispatch = multipleActionsEnhanceDispatch(store.dispatch);
     let dispatch: any = (action: any) => void(0);
     const middlewareAPI = {
       getState: store.getState,
