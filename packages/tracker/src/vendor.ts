@@ -30,7 +30,8 @@ export type ScriptByEnvironment = {
 
 export type VendorAPI = {
   env: Environments;
-  scripts: ScriptByEnvironment; 
+  scripts: ScriptByEnvironment;
+  getInstance: () => any;
   init: (apiKey: string, options?: VendorAPIOptions) => Promise<void>;
   track: (userData: any, eventData: any) => Promise<void>;
   getSessionId: () => undefined | number | string;
@@ -45,9 +46,9 @@ type VendorAPIs = {
 export const getVendorAPI = (appSettings: AppSettings) => 
 {
   const { vendor: _vendor, env: _env } = appSettings;
-  const apis: VendorAPIs = {
-    amplitude: {
+  const api: VendorAPI = {
       env: _env,
+      getInstance: () => getInstance<amplitude.AmplitudeClient>(_vendor),
       scripts: {
         development: [
           {
@@ -64,14 +65,14 @@ export const getVendorAPI = (appSettings: AppSettings) =>
       },
       init: (apiKey, options) => {
         // todo: transform options => amplitude options
-        const instance = getInstance<amplitude.AmplitudeClient>();
+        const instance = api.getInstance();
         return new Promise((resolve, reject) => {
           if(!instance) reject();
           instance.init(apiKey, undefined, options, () => resolve());
         })
       },
       track: (userData, eventData) => {
-        const instance = getInstance<amplitude.AmplitudeClient>();
+        const instance = api.getInstance();
         return new Promise((resolve, reject) => {
           if(!instance) reject();
           if(userData && Object.keys(userData).length > 0) {
@@ -85,14 +86,13 @@ export const getVendorAPI = (appSettings: AppSettings) =>
         });
       },
       getSessionId: () => {
-        const instance = getInstance<amplitude.AmplitudeClient>();
+        const instance = api.getInstance();
         return instance && instance.getSessionId();
       },
       clearUserProperties: () => {
-        const instance = getInstance<amplitude.AmplitudeClient>();
+        const instance = api.getInstance();
         return instance && instance.clearUserProperties();
       }
-    }
   }
-  return apis[_vendor];
+  return api;
 }

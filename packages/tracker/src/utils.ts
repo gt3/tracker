@@ -4,8 +4,8 @@ let _isDomReady = false, loadedScripts = new Set();
 const _ctx = Function('return this;')();
 export const isBrowser = _ctx && _ctx === _ctx.window;
 
-export function getInstance<T>(projectKey?: string): T {
-  const instance = _ctx['amplitude'];
+export function getInstance<T>(vendorKey: string, projectKey?: string): T {
+  const instance = _ctx[vendorKey];
   return instance && (projectKey ? instance.getInstance(projectKey) : instance.getInstance());
 };
 
