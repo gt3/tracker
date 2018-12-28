@@ -1,4 +1,4 @@
-import { isBrowser, onDomReady, injectScript } from './utils';
+import { isBrowser, onDomReady, injectScript, getInstance, scriptExists } from './utils';
 import { Vendor, getVendorAPI, VendorAPI } from './vendor';
 import { load } from './actions';
 import { loadDone, setPendingAction, initDone, initFail, trackDone, trackFail } from './actions.internal';
@@ -51,6 +51,7 @@ export class Client {
     if(this.loadInvoked) return Promise.reject(new Error('Load already called.'));
     this._times.loadStart = new Date().getTime();
     const { env, scripts } = this._vendorAPI;
+    if(scriptExists(scripts)) return Promise.resolve(loadDone());
     return Promise.all(scripts[env].map(injectScript)).then(loadDone);
   }
 
