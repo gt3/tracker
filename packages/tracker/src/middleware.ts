@@ -1,6 +1,6 @@
 import { Client, AppSettings, ClientInitSettings } from './client';
 import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track } from './actions';
-import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE, bufferedActions } from './actions.internal';
+import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE, bufferedActions, BUFFERED_ANALYTICS_ACTIONS } from './actions.internal';
 import { Store, Reducer, AnyAction, Dispatch } from 'redux';
 import { AnalyticsAction, AnalyticsTrackAction, AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData } from './types';
 
@@ -50,9 +50,9 @@ const dispatchBuffer = () => {
 
 export function createAnalyticsMiddleware(appSettings: AppSettings, clientInitSettings: ClientInitSettings) {
   const _client = new Client(appSettings);
-  return ({ dispatch: _dispatch, getState }: Store) => {
+  return ({ dispatch: _dispatch, getState }: { dispatch: any, getState: any }) => {
+    _client.scheduleLoadDispatch(_dispatch);
     const { getActions, dispatch, reset } = dispatchBuffer();
-    _client.scheduleLoadDispatch(dispatch);
     return (next: any) => (action: AnalyticsAction) => {
       if (action.type === LOAD_ANALYTICS) {
         _client.load(dispatch);
@@ -92,37 +92,45 @@ export function createAnalyticsMiddleware(appSettings: AppSettings, clientInitSe
   }
 }
 
-export function multipleActionsEnhanceReducer(reducer: Reducer) {
+export function buferedActionsEnhanceReducer(reducer: Reducer) {
 	return (state: any, action: any) => {
-		if (action.actions && action.actions.type && action.actions instanceof Array) {
-			state = action.actions.reduce(reducer, state);
-		} else {
-			state = reducer(state, action);
-		}
+    if (action.type === BUFFERED_ANALYTICS_ACTIONS) {
+      state = action.meta.reduce(reducer, state);
+    }
+    else {
+      state = reducer(state, action);
+    }
 		return state;
 	};
 }
 
-export function multipleActionsEnhanceDispatch(dispatch: any) {
+/* export function multipleActionsEnhanceDispatch(dispatch: any) {
 	return (action: any) => {
 		var multipleAction;
-
-		if (action instanceof Array) {
-			const bulkActionType = action.map((a) => a.type).join(' => ');
+    const { type, meta } = action;
+		if (type === BUFFERED_ANALYTICS_ACTIONS) {
+			//const bufferedActionType = meta.map((a) => a.type).join(' => ');
 			multipleAction = {
-				type: bulkActionType,
+				type,
 				actions: action
 			};
 		}
 
 		return dispatch(multipleAction || action);
 	};
-}
+} */
 
-export function multipleActionsEnhancer() {
-	return (next: any) => (reducer: any, initialState: any) => {
-		var store = next(multipleActionsEnhanceReducer(reducer), initialState);
-		store.dispatch = multipleActionsEnhanceDispatch(store.dispatch);
-		return store;
+export function trackerStoreEnhancer(appSettings: AppSettings, clientInitSettings: ClientInitSettings) {
+  const middleware = createAnalyticsMiddleware(appSettings, clientInitSettings);
+	return (createStore: any) => (reducer: any, initialState: any) => {
+		let store = createStore(buferedActionsEnhanceReducer(reducer), initialState);
+    // store.dispatch = multipleActionsEnhanceDispatch(store.dispatch);
+    let dispatch = (action: any) => {};
+    const middlewareAPI = {
+      getState: store.getState,
+      dispatch: (action: any) => dispatch(action)
+    }
+    dispatch = middleware(middlewareAPI)(store.dispatch);
+		return { ...store, dispatch };
 	};
 }
