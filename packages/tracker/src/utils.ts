@@ -45,3 +45,11 @@ export function injectScript(script: Script) {
     document.head.appendChild(script);
   });
 }
+
+export function flatten1(arr: any[]) {
+  return arr.reduce((acc, cur) => {
+    if(Array.isArray(cur)) acc.push(...cur);
+    else acc.push(cur);
+    return acc;
+  }, []);
+}

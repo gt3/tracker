@@ -8,6 +8,8 @@ export const DISPATCH_PENDING_ANALYTICS_ACTIONS = `${ANALYTICS} DISPATCH_PENDING
 export const LOAD_ANALYTICS_DONE = `${ANALYTICS} LOAD_DONE`;
 export const INIT_ANALYTICS_DONE = `${ANALYTICS} INIT_DONE`;
 export const INIT_ANALYTICS_ERR = `${ANALYTICS} INIT_ERR`;
+export const TRACK_ANALYTICS_DONE = `${ANALYTICS} TRACK_DONE`;
+export const TRACK_ANALYTICS_ERR = `${ANALYTICS} TRACK_ERR`;
 export const BUFFERED_ANALYTICS_ACTIONS = `${ANALYTICS} BUFFERED_ACTIONS`;
 
 // document action types
@@ -24,6 +26,15 @@ export const initDone = () => ({
 
 export const initFail = (err?: any) => ({
   type: INIT_ANALYTICS_ERR,
+  payload: err
+});
+
+export const trackDone = () => ({
+  type: TRACK_ANALYTICS_DONE
+});
+
+export const trackFail = (err?: any) => ({
+  type: TRACK_ANALYTICS_ERR,
   payload: err
 });
 
