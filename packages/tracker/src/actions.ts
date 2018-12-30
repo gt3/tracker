@@ -1,6 +1,6 @@
 //types
-import { ClientInitSettings } from './client';
 import { AnalyticsTrackAction, TrackActionPayload, AnalyticsTrackActionThunkable, UserData, EventData, UserDataThunkable, EventDataThunkable } from './types';
+import { VendorAPIOptions } from './vendor';
 
 // feature name
 export const ANALYTICS = '[Core.Analytics]';
@@ -16,7 +16,7 @@ export const load = () => ({
   type: LOAD_ANALYTICS
 });
 
-export const init = (payload: ClientInitSettings) => {
+export const init = (payload: VendorAPIOptions) => {
   return ({
     type: INIT_ANALYTICS,
     payload

@@ -1,14 +1,8 @@
 import { isBrowser, onDomReady, injectScript, scriptExists } from './utils';
-import { Vendor, getVendorAPI, VendorAPI } from './vendor';
+import { Vendor, getVendorAPI, VendorAPI, VendorAPIOptions } from './vendor';
 import { load } from './actions';
 import { loadDone, setPendingAction, initDone, initFail, trackDone, trackFail } from './actions.internal';
-import { Dispatch } from 'redux';
 import { AnalyticsAction, AnalyticsTrackAction, Environments } from './types';
-
-export type ClientInitSettings = {
-  apiKey: string;
-  // vendorOptions?: VendorOptions;
-}
 
 export type AppSettings = {
   vendor: Vendor;
@@ -63,8 +57,8 @@ export class Client {
     // check if not loaded, add action to processing queue .. needed?
     if(!this.loadCompleted) return Promise.resolve(setPendingAction(action));
     this._times.initStart = new Date().getTime();
-    const { apiKey, ...rest } = action.payload as ClientInitSettings;
-    return this._vendorAPI.init(apiKey, rest)
+    // const { apiKey, ...rest } = action.payload as VendorAPIOptions;
+    return this._vendorAPI.init(action.payload)
       .then(initDone, () => initFail(new Error('Could not call init on undefined instance.')));
   }
 

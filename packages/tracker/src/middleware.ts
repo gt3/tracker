@@ -1,10 +1,11 @@
-import { Client, AppSettings, ClientInitSettings } from './client';
+import { Client, AppSettings } from './client';
 import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track, ANALYTICS } from './actions';
 import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE, bufferedActions, BUFFERED_ANALYTICS_ACTIONS } from './actions.internal';
 import { Store, Reducer, AnyAction, Dispatch } from 'redux';
 import { AnalyticsAction, AnalyticsTrackAction, AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData } from './types';
 import { isBoolean } from 'util';
 import { flatten1 } from './utils';
+import { VendorAPIOptions } from './vendor';
 
 const resolveWithState = (state: any, data: any) => {
   let newData = data;
@@ -69,7 +70,9 @@ const dispatchBuffer = () => {
   return dispatcher;
 }
 
-export function createAnalyticsMiddleware(appSettings: AppSettings, getClientInitSettings: () => Promise<ClientInitSettings>) {
+export type GetAPIOptions = () => Promise<VendorAPIOptions|null|void>;
+
+export function createAnalyticsMiddleware(appSettings: AppSettings, getAPIOptions: GetAPIOptions) {
   const _client = new Client(appSettings);
   return (store: { dispatch: any, getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
@@ -80,8 +83,8 @@ export function createAnalyticsMiddleware(appSettings: AppSettings, getClientIni
       }
       else if (action.type === LOAD_ANALYTICS_DONE) {
         _client.loadDone();
-        const initDispatchPromise = getClientInitSettings().then(clientInitSettings => {
-          return [init(clientInitSettings), dispatchPendingActions()];
+        const initDispatchPromise = getAPIOptions().then(apiOptions => {
+          return apiOptions && [init(apiOptions), dispatchPendingActions()];
         }, () => null);
         bufferDispatch(initDispatchPromise);
       }
@@ -131,8 +134,8 @@ export function buferedActionsEnhanceReducer(reducer: Reducer) {
 	};
 }
 
-export function trackerStoreEnhancer(appSettings: AppSettings, getClientInitSettings: () => Promise<ClientInitSettings>) {
-  const middleware = createAnalyticsMiddleware(appSettings, getClientInitSettings);
+export function trackerStoreEnhancer(appSettings: AppSettings, getAPIOptions: GetAPIOptions) {
+  const middleware = createAnalyticsMiddleware(appSettings, getAPIOptions);
 	return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
 		let store = createStore(buferedActionsEnhanceReducer(reducer), initialState, ...args);
     let dispatch: any = (action: any) => void(0);

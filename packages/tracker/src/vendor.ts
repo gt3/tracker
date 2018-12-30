@@ -10,6 +10,7 @@ export type PrivacyOptions = Record<
 
 
 export type VendorAPIOptions = {
+  apiKey: string;
   deviceId?: string;
   // language?: string;
   logLevel?: 'DISABLE' | 'ERROR' | 'WARN' | 'INFO';
@@ -32,7 +33,7 @@ export type VendorAPI = {
   env: Environments;
   scripts: ScriptByEnvironment;
   getInstance: () => any;
-  init: (apiKey: string, options?: VendorAPIOptions) => Promise<void>;
+  init: (options: VendorAPIOptions) => Promise<void>;
   track: (userData: any, eventData: any) => Promise<void>;
   getSessionId: () => undefined | number | string;
   clearUserProperties: () => void;
@@ -63,12 +64,13 @@ export const getVendorAPI = (appSettings: AppSettings) =>
           }
         ]
       },
-      init: (apiKey, options) => {
+      init: (options) => {
         // todo: transform options => amplitude options
         const instance = api.getInstance();
         return new Promise((resolve, reject) => {
           if(!instance) reject();
-          instance.init(apiKey, undefined, options, () => resolve());
+          const { apiKey, ...rest } = options;
+          instance.init(apiKey, undefined, rest, () => resolve());
         })
       },
       track: (userData, eventData) => {
