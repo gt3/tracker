@@ -1,14 +1,8 @@
-import { isBrowser, onDomReady, injectScript, scriptExists } from './utils';
-import { Vendor, getVendorAPI, VendorAPI, VendorAPIOptions } from './vendor';
+import { isBrowser, onDomReady, injectScript, scriptExists } from '@csod-oss/tracker-common/build/utils';
+import { AppSettings, VendorAPI } from '@csod-oss/tracker-common';
 import { load } from './actions';
 import { loadDone, setPendingAction, initDone, initFail, trackDone, trackFail } from './actions.internal';
-import { AnalyticsAction, AnalyticsTrackAction, Environments } from './types';
-
-export type AppSettings = {
-  vendor: Vendor;
-  env: Environments;
-  preventAutoLoadInit?: boolean;
-};
+import { AnalyticsAction, AnalyticsTrackAction } from './types';
 
 export class Client {
   private _times: Partial<Times> = {};
@@ -17,10 +11,10 @@ export class Client {
   private _appSettings: AppSettings;
 
   constructor(appSettings: AppSettings) {
-    const { vendor } = appSettings;
-    this._times.created = new Date().getTime();
-    this._vendorAPI = getVendorAPI(appSettings);
+    const { createVendorAPI } = appSettings;
+    this._vendorAPI = createVendorAPI(appSettings);
     this._appSettings = appSettings;
+    this._times.created = new Date().getTime();
   }
 
   get loadInvoked() {

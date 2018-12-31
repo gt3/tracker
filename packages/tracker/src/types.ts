@@ -1,8 +1,6 @@
 import { Action } from 'redux';
 import { SerializeableRecord, SerializeablePrimitives, Serializable, ValueThunk } from './types.generic';
 
-export type Environments = 'development' | 'production';
-
 export type AnalyticsAction = Action & {
   payload?: any;
   meta?: any;

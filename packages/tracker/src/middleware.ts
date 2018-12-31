@@ -1,11 +1,10 @@
-import { Client, AppSettings } from './client';
+import { Client } from './client';
+import { AppSettings, VendorAPIOptions } from '@csod-oss/tracker-common';
 import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track, ANALYTICS } from './actions';
 import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE, bufferedActions, BUFFERED_ANALYTICS_ACTIONS } from './actions.internal';
 import { Store, Reducer, AnyAction, Dispatch } from 'redux';
-import { AnalyticsAction, AnalyticsTrackAction, AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData } from './types';
-import { isBoolean } from 'util';
-import { flatten1 } from './utils';
-import { VendorAPIOptions } from './vendor';
+import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData } from './types';
+import { flatten1 } from '@csod-oss/tracker-common/build/utils';
 
 const resolveWithState = (state: any, data: any) => {
   let newData = data;
@@ -70,9 +69,9 @@ const dispatchBuffer = () => {
   return dispatcher;
 }
 
-export type GetAPIOptions = () => Promise<VendorAPIOptions|null|void>;
+export type GetVendorAPIOptions = () => Promise<VendorAPIOptions|null|void>;
 
-export function createAnalyticsMiddleware(appSettings: AppSettings, getAPIOptions: GetAPIOptions) {
+export function createAnalyticsMiddleware(appSettings: AppSettings, getAPIOptions: GetVendorAPIOptions) {
   const _client = new Client(appSettings);
   return (store: { dispatch: any, getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
@@ -134,7 +133,7 @@ export function buferedActionsEnhanceReducer(reducer: Reducer) {
 	};
 }
 
-export function trackerStoreEnhancer(appSettings: AppSettings, getAPIOptions: GetAPIOptions) {
+export function trackerStoreEnhancer(appSettings: AppSettings, getAPIOptions: GetVendorAPIOptions) {
   const middleware = createAnalyticsMiddleware(appSettings, getAPIOptions);
 	return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
 		let store = createStore(buferedActionsEnhanceReducer(reducer), initialState, ...args);
@@ -142,7 +141,7 @@ export function trackerStoreEnhancer(appSettings: AppSettings, getAPIOptions: Ge
     const middlewareAPI = {
       getState: store.getState,
       dispatch: (action: any) => dispatch(action)
-    }
+    };
     dispatch = middleware(middlewareAPI)(store.dispatch);
 		return { ...store, dispatch };
 	};

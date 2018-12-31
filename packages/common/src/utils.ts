@@ -1,4 +1,4 @@
-import { Script, ScriptByEnvironment } from "./vendor";
+import { Script, ScriptByEnvironment } from "./index";
 
 let _isDomReady = false, loadedScripts = new Set();
 const _ctx = Function('return this;')();

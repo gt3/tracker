@@ -1,6 +1,7 @@
+import { VendorAPIOptions } from '@csod-oss/tracker-common';
+
 //types
 import { AnalyticsTrackAction, TrackActionPayload, AnalyticsTrackActionThunkable, UserData, EventData, UserDataThunkable, EventDataThunkable } from './types';
-import { VendorAPIOptions } from './vendor';
 
 // feature name
 export const ANALYTICS = '[Core.Analytics]';

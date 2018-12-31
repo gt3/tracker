@@ -8,3 +8,6 @@ lib
 dist
 coverage
 reports
+packages/*/build
+packages/*/lib
+packages/*/dist
