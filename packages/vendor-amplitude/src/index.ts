@@ -52,6 +52,11 @@ export const createVendorAPI = (appSettings: AppSettings) =>
       clearUserProperties: () => {
         const instance = api.getInstance();
         return instance && instance.clearUserProperties();
+      },
+      controlTracking: (value: boolean) => {
+        const instance = api.getInstance();
+        if(!instance) return;
+        instance.setOptOut(value);
       }
   }
   return api;

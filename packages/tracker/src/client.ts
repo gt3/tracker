@@ -78,6 +78,10 @@ export class Client {
     return this._vendorAPI.track(action.payload.userData, action.payload.eventData)
       .then(trackDone, () => trackFail(new Error('Could not send track action.')));
   }
+
+  controlTracking(value: boolean) {
+    this._vendorAPI.controlTracking(value);
+  }
 }
 
 type Times = {

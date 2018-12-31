@@ -1,6 +1,6 @@
 import { Client } from './client';
 import { AppSettings, VendorAPIOptions } from '@csod-oss/tracker-common';
-import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track, ANALYTICS } from './actions';
+import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track, ANALYTICS, PAUSE_ANALYTICS_TRACKING, RESUME_ANALYTICS_TRACKING } from './actions';
 import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE, bufferedActions, BUFFERED_ANALYTICS_ACTIONS } from './actions.internal';
 import { Store, Reducer, AnyAction, Dispatch } from 'redux';
 import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData } from './types';
@@ -105,6 +105,12 @@ export function createAnalyticsMiddleware(appSettings: AppSettings, getAPIOption
       else if(action.type === TRACK_ANALYTICS_WITH_STATE) {
         const resolved = resolveToTrackAction(action as AnalyticsTrackActionThunkable, store.getState());
         bufferDispatch(Promise.resolve(resolved));
+      }
+      else if(action.type === PAUSE_ANALYTICS_TRACKING) {
+        _client.controlTracking(true);
+      }
+      else if(action.type === RESUME_ANALYTICS_TRACKING) {
+        _client.controlTracking(false);
       }
       else {
         if(action.type && action.type.indexOf(ANALYTICS) === 0) {

@@ -34,6 +34,7 @@ export type VendorAPI = {
   track: (userData: any, eventData: any) => Promise<void>;
   getSessionId: () => undefined | number | string;
   clearUserProperties: () => void;
+  controlTracking: (value: boolean) => void;
 }
 
 export type AppSettings = {
