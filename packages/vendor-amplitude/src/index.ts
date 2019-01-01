@@ -1,5 +1,5 @@
 import { AppSettings, VendorAPI } from '@csod-oss/tracker-common';
-import { getInstance } from '@csod-oss/tracker-common/build/utils';
+import { getInstance } from './instance';
 
 // api implemention, sdk integration
 export const createVendorAPI = (appSettings: AppSettings) => 

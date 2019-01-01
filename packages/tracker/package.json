@@ -6,10 +6,11 @@
   "license": "ISC",
   "main": "./build/index.js",
   "devDependencies": {
-    "@csod-oss/tracker-common": "*",
     "typescript": "^3.2.2"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@csod-oss/tracker-common": "0.0.1 - 1.x"
+  },
   "scripts": {
     "build": "tsc -p ./"
   },

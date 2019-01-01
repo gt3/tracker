@@ -5,11 +5,6 @@ const _ctx = Function('return this;')();
 export const isBrowser = _ctx && _ctx === _ctx.window;
 export const isLocalhost = isBrowser && ['localhost','127.0.0.1', ''].indexOf(_ctx.location.hostname.toLowerCase()) !== -1;
 
-export function getInstance<T>(vendorKey: string, projectKey?: string): T {
-  const instance = _ctx[vendorKey];
-  return instance && (projectKey ? instance.getInstance(projectKey) : instance.getInstance());
-};
-
 export function scriptExists(scriptMap: ScriptByEnvironment) {
   const scripts = _ctx.document.scripts;
   const targetScripts = flattenScripts(scriptMap).map(ts => ts.toLowerCase());
