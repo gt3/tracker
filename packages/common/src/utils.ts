@@ -87,7 +87,10 @@ const _localhostTracking = {
 
 (function selfRegister() {
   if(isBrowser && isLocalhost) {
-    onDomReady().then(() => { _ctx.localhostTracking = _localhostTracking });
+    onDomReady().then(() => {
+      console.warn(`Use window.localhostTracking.on() to turn on tracking on ${_ctx.location.hostname}.`);
+      _ctx.localhostTracking = _localhostTracking;
+    });
   }
 })();
 
