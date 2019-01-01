@@ -1,63 +1,75 @@
-import { AppSettings, VendorAPI } from '@csod-oss/tracker-common';
+import { AppSettings, VendorAPI, VendorAPIOptions } from '@csod-oss/tracker-common';
 import { getInstance } from './instance';
 
-// api implemention, sdk integration
-export const createVendorAPI = (appSettings: AppSettings) => 
-{
-  const { vendorKey, env } = appSettings;
-  const api: VendorAPI = {
-      env,
-      getInstance: () => getInstance<amplitude.AmplitudeClient>(vendorKey),
-      scripts: {
-        development: [
-          {
-            src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2.js'
-          }
-        ],
-        production: [
-          {
-            src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2-min.js',
-            integrity: 'sha384-f1maK8oMrCMNEWGGg3Hx3dMTOQBbXr4e1ZIjB/J0TcgJx5UeE0g5S5PM5BbWPe4E',
-            crossorigin: 'anonymous'
-          }
-        ]
-      },
-      init: (options) => {
-        // todo: transform options => amplitude options
-        const instance = api.getInstance();
-        return new Promise((resolve, reject) => {
-          if(!instance) reject();
-          const { apiKey, ...rest } = options;
-          instance.init(apiKey, undefined, rest, () => resolve());
-        })
-      },
-      track: (userData, eventData) => {
-        const instance = api.getInstance();
-        return new Promise((resolve, reject) => {
-          if(!instance) reject();
-          if(userData && Object.keys(userData).length > 0) {
-            instance.setUserProperties(userData);
-          }
-          if(eventData) {
-            const { eventName, ...rest } = eventData;
-            instance.logEvent(eventName, rest);
-          }
-          resolve();
-        });
-      },
-      getSessionId: () => {
-        const instance = api.getInstance();
-        return instance && instance.getSessionId();
-      },
-      clearUserProperties: () => {
-        const instance = api.getInstance();
-        return instance && instance.clearUserProperties();
-      },
-      controlTracking: (value: boolean) => {
-        const instance = api.getInstance();
-        if(!instance) return;
-        instance.setOptOut(value);
+export class AmplitudeAPI implements VendorAPI {
+  static vendorKey = 'amplitude';
+  static scripts = {
+    development: [
+      {
+        src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2.js'
       }
+    ],
+    production: [
+      {
+        src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2-min.js',
+        integrity: 'sha384-f1maK8oMrCMNEWGGg3Hx3dMTOQBbXr4e1ZIjB/J0TcgJx5UeE0g5S5PM5BbWPe4E',
+        crossorigin: 'anonymous'
+      }
+    ]
+  };
+  
+  appSettings: AppSettings;
+
+  constructor(appSettings: AppSettings) {
+    this.appSettings = appSettings;
   }
-  return api;
+
+  getInstance() {
+    return getInstance<amplitude.AmplitudeClient>(AmplitudeAPI.vendorKey);
+  }
+
+  getScript() {
+    return AmplitudeAPI.scripts[this.appSettings.env];
+  }
+
+  init(options: VendorAPIOptions) {
+    // todo: transform options => amplitude options
+    const instance = this.getInstance();
+    return new Promise<void>((resolve, reject) => {
+      if(!instance) reject();
+      const { apiKey, ...rest } = options;
+      instance.init(apiKey, undefined, rest, () => resolve());
+    })
+  }
+
+  track(userData: any, eventData: any) {
+    const instance = this.getInstance();
+    return new Promise<void>((resolve, reject) => {
+      if(!instance) reject();
+      if(userData && Object.keys(userData).length > 0) {
+        instance.setUserProperties(userData);
+      }
+      if(eventData) {
+        const { eventName, ...rest } = eventData;
+        instance.logEvent(eventName, rest);
+      }
+      resolve();
+    });
+  }
+
+  getSessionId() {
+    const instance = this.getInstance();
+    return instance && instance.getSessionId();
+  }
+
+  clearUserProperties() {
+    const instance = this.getInstance();
+    return instance && instance.clearUserProperties();
+  }
+
+  controlTracking(value: boolean) {
+    const instance = this.getInstance();
+    if(!instance) return;
+    instance.setOptOut(value);
+  }
 }

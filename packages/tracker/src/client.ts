@@ -1,5 +1,5 @@
 import { isBrowser, onDomReady, injectScript, scriptExists, isLocalhost, isLocalhostTrackingEnabled } from '@csod-oss/tracker-common/build/utils';
-import { AppSettings, VendorAPI } from '@csod-oss/tracker-common';
+import { AppSettings, VendorAPI, ScriptByEnvironment } from '@csod-oss/tracker-common';
 import { load, pauseTracking, resumeTracking } from './actions';
 import { loadDone, setPendingAction, initDone, initFail, trackDone, trackFail } from './actions.internal';
 import { AnalyticsAction, AnalyticsTrackAction } from './types';
@@ -9,11 +9,13 @@ export class Client {
   private _pendingActions = new Set<AnalyticsAction>();
   private _vendorAPI: VendorAPI;
   private _appSettings: AppSettings;
+  private _allScripts: ScriptByEnvironment;
 
   constructor(appSettings: AppSettings) {
-    const { createVendorAPI } = appSettings;
-    this._vendorAPI = createVendorAPI(appSettings);
+    const { VendorAPI } = appSettings;
+    this._vendorAPI = new VendorAPI(appSettings);
     this._appSettings = appSettings;
+    this._allScripts = VendorAPI.scripts;
     this._times.created = new Date().getTime();
   }
 
@@ -38,9 +40,9 @@ export class Client {
   load() {
     if(this.loadInvoked) return Promise.reject(new Error('Load already called.'));
     this._times.loadStart = new Date().getTime();
-    const { env, scripts, getInstance } = this._vendorAPI;
-    if(getInstance() || scriptExists(scripts)) return Promise.resolve(loadDone());
-    return Promise.all(scripts[env].map(injectScript)).then(loadDone);
+    const { getScript, getInstance } = this._vendorAPI;
+    if(getInstance() || scriptExists(this._allScripts)) return Promise.resolve(loadDone());
+    return Promise.all(getScript().map(injectScript)).then(loadDone);
   }
 
   loadDone() {

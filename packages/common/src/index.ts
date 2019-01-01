@@ -1,7 +1,5 @@
 export type Environments = 'development' | 'production';
 
-export type Vendor = 'amplitude'; // | 'segment' | 'experiments'
-
 export type PrivacyOptions = Record<
 'city'|'country'|'device_model'|'dma'|'ip_address'|'language'|'os_name'|'os_version'|'platform'|'region'|'version_name'
 , boolean>;
@@ -27,9 +25,11 @@ export type ScriptByEnvironment = {
 }
 
 export type VendorAPI = {
-  env: Environments;
-  scripts: ScriptByEnvironment;
+  // env: Environments;
+  // scripts: ScriptByEnvironment;
+  appSettings: AppSettings;
   getInstance: () => any;
+  getScript: () => Script[];
   init: (options: VendorAPIOptions) => Promise<void>;
   track: (userData: any, eventData: any) => Promise<void>;
   getSessionId: () => undefined | number | string;
@@ -37,10 +37,15 @@ export type VendorAPI = {
   controlTracking: (value: boolean) => void;
 }
 
+interface VendorAPIWrapper {
+  new(appSettings: AppSettings): VendorAPI;
+  scripts: ScriptByEnvironment;
+  vendorKey: string;
+}
+
 export type AppSettings = {
-  vendorKey: Vendor;
   env: Environments;
-  createVendorAPI: (appSettings: AppSettings) =>  VendorAPI;
+  VendorAPI: VendorAPIWrapper;
   preventAutoLoadInit?: boolean;
-};
+}
 
