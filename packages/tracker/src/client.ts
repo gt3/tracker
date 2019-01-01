@@ -1,6 +1,6 @@
-import { isBrowser, onDomReady, injectScript, scriptExists } from '@csod-oss/tracker-common/build/utils';
+import { isBrowser, onDomReady, injectScript, scriptExists, isLocalhost, isLocalhostTrackingEnabled } from '@csod-oss/tracker-common/build/utils';
 import { AppSettings, VendorAPI } from '@csod-oss/tracker-common';
-import { load } from './actions';
+import { load, pauseTracking, resumeTracking } from './actions';
 import { loadDone, setPendingAction, initDone, initFail, trackDone, trackFail } from './actions.internal';
 import { AnalyticsAction, AnalyticsTrackAction } from './types';
 
@@ -45,6 +45,11 @@ export class Client {
 
   loadDone() {
     this._times.loadEnd = new Date().getTime();
+    let action = null;
+    if(isLocalhost) {
+      action = !isLocalhostTrackingEnabled() ? pauseTracking() : resumeTracking();
+    }
+    return Promise.resolve(action);
   }
 
   init(action: AnalyticsAction) {

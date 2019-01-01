@@ -40,6 +40,6 @@ export const pauseTracking = () => ({
   type: PAUSE_ANALYTICS_TRACKING
 });
 
-export const resueTracking = () => ({
+export const resumeTracking = () => ({
   type: RESUME_ANALYTICS_TRACKING
 });

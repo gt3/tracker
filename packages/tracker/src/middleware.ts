@@ -81,7 +81,7 @@ export function createAnalyticsMiddleware(appSettings: AppSettings, getAPIOption
         bufferDispatch(_client.load());
       }
       else if (action.type === LOAD_ANALYTICS_DONE) {
-        _client.loadDone();
+        bufferDispatch(_client.loadDone());
         const initDispatchPromise = getAPIOptions().then(apiOptions => {
           return apiOptions && [init(apiOptions), dispatchPendingActions()];
         }, () => null);

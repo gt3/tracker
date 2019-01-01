@@ -3,6 +3,7 @@ import { Script, ScriptByEnvironment } from "./index";
 let _isDomReady = false, loadedScripts = new Set();
 const _ctx = Function('return this;')();
 export const isBrowser = _ctx && _ctx === _ctx.window;
+export const isLocalhost = isBrowser && ['localhost','127.0.0.1', ''].indexOf(_ctx.location.hostname.toLowerCase()) !== -1;
 
 export function getInstance<T>(vendorKey: string, projectKey?: string): T {
   const instance = _ctx[vendorKey];
@@ -81,3 +82,18 @@ function flattenScripts(scriptMap: any) {
     return acc;
   }, []);
 }
+
+const _localhostTrackingKey = '__localhostTracking__';
+
+const _localhostTracking = {
+  on: () => _ctx.localStorage.setItem(_localhostTrackingKey, true),
+  clear: () => _ctx.localStorage.removeItem(_localhostTrackingKey)
+};
+
+(function selfRegister() {
+  if(isBrowser && isLocalhost) {
+    onDomReady().then(() => { _ctx.localhostTracking = _localhostTracking });
+  }
+})();
+
+export const isLocalhostTrackingEnabled = () => !!_ctx.localStorage.getItem(_localhostTrackingKey);
