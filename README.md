@@ -87,6 +87,7 @@ trackWithState({
 ```
 
 ## Documentation
-
-- [Tracker API](https://github.com/gt3/tracker/wiki)
+- [Tracker Middleware API](https://github.com/gt3/tracker/wiki)
+- [Control Tracking Behavior](https://github.com/gt3/tracker/wiki)
+- [Actions Glossary](https://github.com/gt3/tracker/wiki)
 - [Vendor SDK Integration](https://github.com/gt3/tracker/wiki) (tbd)
