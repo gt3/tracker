@@ -81,9 +81,9 @@ function flattenScripts(scriptMap: any) {
 const _localhostTrackingKey = '__localhostTracking__';
 
 const _localhostTracking = {
-  on: () => _ctx.localStorage.setItem(_localhostTrackingKey, true),
-  status: () => _ctx.localStorage.getItem(_localhostTrackingKey),
-  clear: () => _ctx.localStorage.removeItem(_localhostTrackingKey)
+  on: () => _ctx.sessionStorage.setItem(_localhostTrackingKey, true),
+  status: () => _ctx.sessionStorage.getItem(_localhostTrackingKey),
+  clear: () => _ctx.sessionStorage.removeItem(_localhostTrackingKey)
 };
 
 export const isLocalhostTrackingEnabled = () => !!_localhostTracking.status();
