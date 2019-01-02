@@ -24,7 +24,7 @@ There are two primary configuration options available:
 // [createTrackerStoreEnhancer] creates the store enhancer/middleware, [AppSettings] is a type
 import { createTrackerStoreEnhancer, AppSettings } from '@csod-oss/tracker';
 
-// To use Amplitude as a vendor:
+// To use Amplitude as a vendor: npm install @csod-oss/tracker-vendor-amplitude
 // Import vendor's API implementation [AmplitudeAPI] and type [AmplitudeAPIOptions]
 import { AmplitudeAPI, AmplitudeAPIOptions } from '@csod-oss/tracker-vendor-amplitude';
 
