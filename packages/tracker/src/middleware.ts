@@ -139,7 +139,7 @@ function buferedActionsEnhanceReducer(reducer: Reducer) {
 	};
 }
 
-export function trackerStoreEnhancer<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>) {
+export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>) {
   const middleware = createTrackerMiddleware(appSettings, API, getAPIOptions);
 	return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
 		let store = createStore(buferedActionsEnhanceReducer(reducer), initialState, ...args);
