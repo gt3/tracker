@@ -71,7 +71,7 @@ const dispatchBuffer = () => {
 
 export type GetVendorAPIOptions<T> = () => Promise<T|null|void>;
 
-export function createAnalyticsMiddleware<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>) {
+function createTrackerMiddleware<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>) {
   const _client = new Client(appSettings, API);
   return (store: { dispatch: any, getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
@@ -127,7 +127,7 @@ export function createAnalyticsMiddleware<T extends VendorAPIOptions>(appSetting
   }
 }
 
-export function buferedActionsEnhanceReducer(reducer: Reducer) {
+function buferedActionsEnhanceReducer(reducer: Reducer) {
 	return (state: any, action: any) => {
     if (action.type === BUFFERED_ANALYTICS_ACTIONS) {
       state = action.meta.reduce(reducer, state);
@@ -140,7 +140,7 @@ export function buferedActionsEnhanceReducer(reducer: Reducer) {
 }
 
 export function trackerStoreEnhancer<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>) {
-  const middleware = createAnalyticsMiddleware(appSettings, API, getAPIOptions);
+  const middleware = createTrackerMiddleware(appSettings, API, getAPIOptions);
 	return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
 		let store = createStore(buferedActionsEnhanceReducer(reducer), initialState, ...args);
     let dispatch: any = (action: any) => void(0);
