@@ -8,7 +8,6 @@
   "devDependencies": {
     "typescript": "^3.2.2"
   },
-  "dependencies": {},
   "scripts": {
     "build": "tsc -p ./"
   },
