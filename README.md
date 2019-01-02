@@ -1,18 +1,24 @@
 ## `npm install @csod-oss/tracker`
 
-Use this wrapper to integrate with product/web analytics sdks.
+Use this module to integrate with analytics vendor sdks.
 
 ### Benefits
+- Abstract out vendor specific implementation so your app can integrate with multiple vendors with a common API.
+- Enforce consistency with Typescript types.
 - Redux-friendly
   - Action-oriented design
-  - Developer tools support
-- Abstract out vendor specific implementation so your app can integrate with multiple vendors with a common API
+  - Easy integration with developer tools
 
-### Quick start
 
-## 1. Hookup middleware to Redux store
+## Quick start
+
+### 1. Hookup middleware to Redux store
 
 This part involves setting up the tracker middleware to prepare your app to send tracking events.
+
+There are two primary configuration options available:
+1. App Settings - Controls tracker behavior.
+2. Vendor API Options - Used for Vendor API initialization.
 
 ```typescript
 // [createTrackerStoreEnhancer] creates the store enhancer/middleware, [AppSettings] is a type
@@ -44,7 +50,7 @@ const enhancer = compose(
 export const store = createStore(rootReducer, {}, enhancer);
 ```
 
-## 2. Use builtin action creators to dispatch events
+### 2. Use builtin action creators to dispatch events
 
 Now all that is left is to dispatch "tracking" actions. 
 
@@ -79,3 +85,8 @@ trackWithState({
   }
 })
 ```
+
+## Documentation
+
+- [Tracker API](https://github.com/gt3/tracker/wiki)
+- [Vendor SDK Integration](https://github.com/gt3/tracker/wiki) (tbd)
