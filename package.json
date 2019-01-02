@@ -12,7 +12,7 @@
     "bootstrap": "lerna bootstrap --hoist",
     "clean": "lerna clean",
     "build": "lerna run build",
-    "publish": "lerna publish"
+    "push": "lerna publish --registry http://registry.npmjs.org"
   },
   "publishConfig": {
     "access": "public",
