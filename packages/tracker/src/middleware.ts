@@ -71,7 +71,7 @@ const dispatchBuffer = () => {
 
 export type GetVendorAPIOptions<T> = () => Promise<T|null|void>;
 
-export function createAnalyticsMiddleware<T extends Env, U extends VendorAPIOptions>(appSettings: AppSettings<T>, API: VendorAPIWrapper<T, U>, getAPIOptions: GetVendorAPIOptions<U>) {
+export function createAnalyticsMiddleware<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>) {
   const _client = new Client(appSettings, API);
   return (store: { dispatch: any, getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
@@ -139,7 +139,7 @@ export function buferedActionsEnhanceReducer(reducer: Reducer) {
 	};
 }
 
-export function trackerStoreEnhancer<T extends Env, U extends VendorAPIOptions>(appSettings: AppSettings<T>, API: VendorAPIWrapper<T, U>, getAPIOptions: GetVendorAPIOptions<U>) {
+export function trackerStoreEnhancer<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>) {
   const middleware = createAnalyticsMiddleware(appSettings, API, getAPIOptions);
 	return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
 		let store = createStore(buferedActionsEnhanceReducer(reducer), initialState, ...args);

@@ -1,4 +1,5 @@
-export type Env = string;
+export type EnvType = string;
+export type Env = EnvType & 'development' | 'production';
 
 export type VendorAPIOptions = {
   apiKey: string;
@@ -10,27 +11,26 @@ export type Script = {
   crossorigin?: string;
 }
 
-export type ScriptByEnvironment<T extends Env> = Record<T, Script[]>;
+export type ScriptByEnvironment<V extends EnvType = Env> = Record<V, Script[]>;
 
-export type VendorAPI<T, U extends VendorAPIOptions> = {
-  env: T;
+export type VendorAPI<T extends VendorAPIOptions, V extends EnvType = Env> = {
+  env: V;
   getInstance: () => any;
   getScript: () => Script[];
-  init: (options: U) => Promise<void>;
+  init: (options: T) => Promise<void>;
   track: (userData: any, eventData: any) => Promise<void>;
   getSessionId: () => undefined | number | string;
   clearUserProperties: () => void;
   controlTracking: (value: boolean) => void;
 }
 
-export interface VendorAPIWrapper<T extends Env, U extends VendorAPIOptions> {
-  new(env: T): VendorAPI<T, U>;
-  scripts: ScriptByEnvironment<T>;
+export interface VendorAPIWrapper<T extends VendorAPIOptions, V extends EnvType = Env> {
+  new(env: V): VendorAPI<T, V>;
+  scripts: ScriptByEnvironment<V>;
   vendorKey: string;
 }
 
-
-export type AppSettings<T extends Env> = {
-  env: T;
+export type AppSettings<V extends EnvType = Env> = {
+  env: V;
   preventAutoLoadInit?: boolean;
 }

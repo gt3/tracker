@@ -1,12 +1,22 @@
-import { AppSettings, VendorAPI, VendorAPIOptions, ScriptByEnvironment } from '@csod-oss/tracker-common';
+import { Env, VendorAPI, VendorAPIOptions, ScriptByEnvironment } from '@csod-oss/tracker-common';
 import { getInstance } from './instance';
-import { Env, AmplitudeAPIOptions } from './types';
 
-export  { Env, AmplitudeAPIOptions };
+export type PrivacyOptions = Record<
+'city'|'country'|'device_model'|'dma'|'ip_address'|'language'|'os_name'|'os_version'|'platform'|'region'|'version_name'
+, boolean>;
 
-export class AmplitudeAPI implements VendorAPI<Env, AmplitudeAPIOptions> {
+export type AmplitudeAPIOptions = VendorAPIOptions & {
+  deviceId?: string;
+  // language?: string;
+  logLevel?: 'DISABLE' | 'ERROR' | 'WARN' | 'INFO';
+  optOut?: boolean;
+  platform?: string;
+  privacyOptions?: Partial<PrivacyOptions>;
+}
+
+export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
   static vendorKey = 'amplitude';
-  static scripts: ScriptByEnvironment<Env> = {
+  static scripts: ScriptByEnvironment = {
     development: [
       {
         src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2.js'

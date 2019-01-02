@@ -4,14 +4,14 @@ import { load, pauseTracking, resumeTracking } from './actions';
 import { loadDone, setPendingAction, initDone, initFail, trackDone, trackFail } from './actions.internal';
 import { AnalyticsAction, AnalyticsTrackAction } from './types';
 
-export class Client<T extends Env, U extends VendorAPIOptions> {
+export class Client<T extends VendorAPIOptions> {
   private _times: Partial<Times> = {};
   private _pendingActions = new Set<AnalyticsAction>();
-  private _vendorAPI: VendorAPI<T,U>;
-  private _appSettings: AppSettings<T>;
-  private _allScripts: ScriptByEnvironment<T>;
+  private _vendorAPI: VendorAPI<T>;
+  private _appSettings: AppSettings;
+  private _allScripts: ScriptByEnvironment;
 
-  constructor(appSettings: AppSettings<T>, VendorAPI: VendorAPIWrapper<T, U>) {
+  constructor(appSettings: AppSettings, VendorAPI: VendorAPIWrapper<T>) {
     const { env } = appSettings;
     this._vendorAPI = new VendorAPI(env);
     this._appSettings = appSettings;
