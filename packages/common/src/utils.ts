@@ -5,7 +5,7 @@ const _ctx = Function('return this;')();
 export const isBrowser = _ctx && _ctx === _ctx.window;
 export const isLocalhost = isBrowser && ['localhost','127.0.0.1', ''].indexOf(_ctx.location.hostname.toLowerCase()) !== -1;
 
-export function scriptExists(scriptMap: ScriptByEnvironment) {
+export function scriptExists<T extends string>(scriptMap: ScriptByEnvironment<T>) {
   const scripts = _ctx.document.scripts;
   const targetScripts = flattenScripts(scriptMap).map(ts => ts.toLowerCase());
   let found = false;

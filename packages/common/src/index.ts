@@ -1,17 +1,5 @@
-export type Environments = 'development' | 'production';
-
-export type PrivacyOptions = Record<
-'city'|'country'|'device_model'|'dma'|'ip_address'|'language'|'os_name'|'os_version'|'platform'|'region'|'version_name'
-, boolean>;
-
 export type VendorAPIOptions = {
   apiKey: string;
-  deviceId?: string;
-  // language?: string;
-  logLevel?: 'DISABLE' | 'ERROR' | 'WARN' | 'INFO';
-  optOut?: boolean;
-  platform?: string;
-  privacyOptions?: Partial<PrivacyOptions>;
 }
 
 export type Script = {
@@ -20,32 +8,26 @@ export type Script = {
   crossorigin?: string;
 }
 
-export type ScriptByEnvironment = {
-  [key in Environments]: Script[];
-}
+export type ScriptByEnvironment<T extends string> = Record<T, Script[]>;
 
-export type VendorAPI = {
-  // env: Environments;
-  // scripts: ScriptByEnvironment;
-  appSettings: AppSettings;
+export type VendorAPI<T, U extends VendorAPIOptions> = {
+  env: T;
   getInstance: () => any;
   getScript: () => Script[];
-  init: (options: VendorAPIOptions) => Promise<void>;
+  init: (options: U) => Promise<void>;
   track: (userData: any, eventData: any) => Promise<void>;
   getSessionId: () => undefined | number | string;
   clearUserProperties: () => void;
   controlTracking: (value: boolean) => void;
 }
 
-interface VendorAPIWrapper {
-  new(appSettings: AppSettings): VendorAPI;
-  scripts: ScriptByEnvironment;
+export interface VendorAPIWrapper<T extends string, U extends VendorAPIOptions> {
+  new(env: T): VendorAPI<T, U>;
+  scripts: ScriptByEnvironment<T>;
   vendorKey: string;
 }
 
-export type AppSettings = {
-  env: Environments;
-  VendorAPI: VendorAPIWrapper;
+export type AppSettings<T extends string> = {
+  env: T;
   preventAutoLoadInit?: boolean;
 }
-

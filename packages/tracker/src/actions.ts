@@ -4,7 +4,7 @@ import { VendorAPIOptions } from '@csod-oss/tracker-common';
 import { AnalyticsTrackAction, TrackActionPayload, AnalyticsTrackActionThunkable, UserData, EventData, UserDataThunkable, EventDataThunkable } from './types';
 
 // feature name
-export const ANALYTICS = '[Core.Analytics]';
+export const ANALYTICS = '[Core.Tracker]';
 
 // command action types
 export const LOAD_ANALYTICS = `${ANALYTICS} LOAD`;
@@ -19,7 +19,7 @@ export const load = () => ({
   type: LOAD_ANALYTICS
 });
 
-export const init = (payload: VendorAPIOptions) => {
+export const init = <T extends VendorAPIOptions> (payload: T) => {
   return ({
     type: INIT_ANALYTICS,
     payload

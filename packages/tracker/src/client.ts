@@ -1,19 +1,19 @@
 import { isBrowser, onDomReady, injectScript, scriptExists, isLocalhost, isLocalhostTrackingEnabled } from '@csod-oss/tracker-common/build/utils';
-import { AppSettings, VendorAPI, ScriptByEnvironment } from '@csod-oss/tracker-common';
+import { AppSettings, VendorAPI, ScriptByEnvironment, VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import { load, pauseTracking, resumeTracking } from './actions';
 import { loadDone, setPendingAction, initDone, initFail, trackDone, trackFail } from './actions.internal';
 import { AnalyticsAction, AnalyticsTrackAction } from './types';
 
-export class Client {
+export class Client<T extends string, U extends VendorAPIOptions> {
   private _times: Partial<Times> = {};
   private _pendingActions = new Set<AnalyticsAction>();
-  private _vendorAPI: VendorAPI;
-  private _appSettings: AppSettings;
-  private _allScripts: ScriptByEnvironment;
+  private _vendorAPI: VendorAPI<T,U>;
+  private _appSettings: AppSettings<T>;
+  private _allScripts: ScriptByEnvironment<T>;
 
-  constructor(appSettings: AppSettings) {
-    const { VendorAPI } = appSettings;
-    this._vendorAPI = new VendorAPI(appSettings);
+  constructor(appSettings: AppSettings<T>, VendorAPI: VendorAPIWrapper<T, U>) {
+    const { env } = appSettings;
+    this._vendorAPI = new VendorAPI(env);
     this._appSettings = appSettings;
     this._allScripts = VendorAPI.scripts;
     this._times.created = new Date().getTime();
@@ -58,7 +58,6 @@ export class Client {
     // check if not loaded, add action to processing queue .. needed?
     if(!this.loadCompleted) return Promise.resolve(setPendingAction(action));
     this._times.initStart = new Date().getTime();
-    // const { apiKey, ...rest } = action.payload as VendorAPIOptions;
     return this._vendorAPI.init(action.payload)
       .then(initDone, () => initFail(new Error('Could not call init on undefined instance.')));
   }

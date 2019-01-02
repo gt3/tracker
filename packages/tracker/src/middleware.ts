@@ -1,5 +1,5 @@
 import { Client } from './client';
-import { AppSettings, VendorAPIOptions } from '@csod-oss/tracker-common';
+import { AppSettings, VendorAPIOptions, VendorAPI, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track, ANALYTICS, PAUSE_ANALYTICS_TRACKING, RESUME_ANALYTICS_TRACKING } from './actions';
 import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE, bufferedActions, BUFFERED_ANALYTICS_ACTIONS } from './actions.internal';
 import { Store, Reducer, AnyAction, Dispatch } from 'redux';
@@ -69,10 +69,10 @@ const dispatchBuffer = () => {
   return dispatcher;
 }
 
-export type GetVendorAPIOptions = () => Promise<VendorAPIOptions|null|void>;
+export type GetVendorAPIOptions<T> = () => Promise<T|null|void>;
 
-export function createAnalyticsMiddleware(appSettings: AppSettings, getAPIOptions: GetVendorAPIOptions) {
-  const _client = new Client(appSettings);
+export function createAnalyticsMiddleware<T extends string, U extends VendorAPIOptions>(appSettings: AppSettings<T>, API: VendorAPIWrapper<T, U>, getAPIOptions: GetVendorAPIOptions<U>) {
+  const _client = new Client(appSettings, API);
   return (store: { dispatch: any, getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
     const { getBufferedActions, bufferDispatch, reset } = dispatchBuffer();
@@ -139,8 +139,8 @@ export function buferedActionsEnhanceReducer(reducer: Reducer) {
 	};
 }
 
-export function trackerStoreEnhancer(appSettings: AppSettings, getAPIOptions: GetVendorAPIOptions) {
-  const middleware = createAnalyticsMiddleware(appSettings, getAPIOptions);
+export function trackerStoreEnhancer<T extends string, U extends VendorAPIOptions>(appSettings: AppSettings<T>, API: VendorAPIWrapper<T, U>, getAPIOptions: GetVendorAPIOptions<U>) {
+  const middleware = createAnalyticsMiddleware(appSettings, API, getAPIOptions);
 	return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
 		let store = createStore(buferedActionsEnhanceReducer(reducer), initialState, ...args);
     let dispatch: any = (action: any) => void(0);

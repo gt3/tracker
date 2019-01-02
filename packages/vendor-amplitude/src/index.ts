@@ -1,9 +1,10 @@
-import { AppSettings, VendorAPI, VendorAPIOptions } from '@csod-oss/tracker-common';
+import { AppSettings, VendorAPI, VendorAPIOptions, ScriptByEnvironment } from '@csod-oss/tracker-common';
 import { getInstance } from './instance';
+import { Envs, AmplitudeAPIOptions } from './types';
 
-export class AmplitudeAPI implements VendorAPI {
+export class AmplitudeAPI implements VendorAPI<Envs, AmplitudeAPIOptions> {
   static vendorKey = 'amplitude';
-  static scripts = {
+  static scripts: ScriptByEnvironment<Envs> = {
     development: [
       {
         src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2.js'
@@ -18,10 +19,10 @@ export class AmplitudeAPI implements VendorAPI {
     ]
   };
   
-  appSettings: AppSettings;
+  env: Envs;
 
-  constructor(appSettings: AppSettings) {
-    this.appSettings = appSettings;
+  constructor(env: Envs) {
+    this.env = env;
   }
 
   getInstance() {
@@ -29,7 +30,7 @@ export class AmplitudeAPI implements VendorAPI {
   }
 
   getScript() {
-    return AmplitudeAPI.scripts[this.appSettings.env];
+    return AmplitudeAPI.scripts[this.env];
   }
 
   init(options: VendorAPIOptions) {
