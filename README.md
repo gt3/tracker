@@ -1,6 +1,6 @@
 ## `npm install @csod-oss/tracker`
 
-Use this module to integrate with analytics vendor sdks.
+Use this library to integrate analytics vendor sdks with your JavaScript app.
 
 ### Benefits
 - Abstract out vendor specific implementation so your app can integrate with multiple vendors with a common API.
