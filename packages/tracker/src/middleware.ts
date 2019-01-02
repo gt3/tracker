@@ -1,9 +1,9 @@
 import { Client } from './client';
-import { AppSettings, VendorAPIOptions, VendorAPI, VendorAPIWrapper, Env } from '@csod-oss/tracker-common';
+import { VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track, ANALYTICS, PAUSE_ANALYTICS_TRACKING, RESUME_ANALYTICS_TRACKING } from './actions';
 import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE, bufferedActions, BUFFERED_ANALYTICS_ACTIONS } from './actions.internal';
 import { Store, Reducer, AnyAction, Dispatch } from 'redux';
-import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData } from './types';
+import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData, AppSettings } from './types';
 import { flatten1 } from '@csod-oss/tracker-common/build/utils';
 
 const resolveWithState = (state: any, data: any) => {

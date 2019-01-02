@@ -30,7 +30,3 @@ export interface VendorAPIWrapper<T extends VendorAPIOptions, V extends EnvType 
   vendorKey: string;
 }
 
-export type AppSettings<V extends EnvType = Env> = {
-  env: V;
-  preventAutoLoadInit?: boolean;
-}

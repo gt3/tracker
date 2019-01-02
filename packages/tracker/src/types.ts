@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { SerializeableRecord, SerializeablePrimitives, Serializable, ValueThunk } from './types.generic';
+import { EnvType, Env } from '@csod-oss/tracker-common';
 
 export type AnalyticsAction = Action & {
   payload?: any;
@@ -32,4 +33,9 @@ export type AnalyticsTrackAction = Action & {
 
 export type AnalyticsTrackActionThunkable = Action & {
   payload: TrackActionPayload<UserDataThunkable, EventDataThunkable>
+}
+
+export type AppSettings<V extends EnvType = Env> = {
+  env: V;
+  preventAutoLoadInit?: boolean;
 }
