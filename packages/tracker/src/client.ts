@@ -1,10 +1,10 @@
 import { isBrowser, onDomReady, injectScript, scriptExists, isLocalhost, isLocalhostTrackingEnabled } from '@csod-oss/tracker-common/build/utils';
-import { AppSettings, VendorAPI, ScriptByEnvironment, VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
+import { AppSettings, VendorAPI, ScriptByEnvironment, VendorAPIOptions, VendorAPIWrapper, Env } from '@csod-oss/tracker-common';
 import { load, pauseTracking, resumeTracking } from './actions';
 import { loadDone, setPendingAction, initDone, initFail, trackDone, trackFail } from './actions.internal';
 import { AnalyticsAction, AnalyticsTrackAction } from './types';
 
-export class Client<T extends string, U extends VendorAPIOptions> {
+export class Client<T extends Env, U extends VendorAPIOptions> {
   private _times: Partial<Times> = {};
   private _pendingActions = new Set<AnalyticsAction>();
   private _vendorAPI: VendorAPI<T,U>;

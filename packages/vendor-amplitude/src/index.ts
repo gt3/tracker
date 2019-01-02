@@ -1,10 +1,12 @@
 import { AppSettings, VendorAPI, VendorAPIOptions, ScriptByEnvironment } from '@csod-oss/tracker-common';
 import { getInstance } from './instance';
-import { Envs, AmplitudeAPIOptions } from './types';
+import { Env, AmplitudeAPIOptions } from './types';
 
-export class AmplitudeAPI implements VendorAPI<Envs, AmplitudeAPIOptions> {
+export  { Env, AmplitudeAPIOptions };
+
+export class AmplitudeAPI implements VendorAPI<Env, AmplitudeAPIOptions> {
   static vendorKey = 'amplitude';
-  static scripts: ScriptByEnvironment<Envs> = {
+  static scripts: ScriptByEnvironment<Env> = {
     development: [
       {
         src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2.js'
@@ -19,21 +21,21 @@ export class AmplitudeAPI implements VendorAPI<Envs, AmplitudeAPIOptions> {
     ]
   };
   
-  env: Envs;
+  env: Env;
 
-  constructor(env: Envs) {
+  constructor(env: Env) {
     this.env = env;
   }
 
-  getInstance() {
+  getInstance = () => {
     return getInstance<amplitude.AmplitudeClient>(AmplitudeAPI.vendorKey);
   }
 
-  getScript() {
+  getScript = () => {
     return AmplitudeAPI.scripts[this.env];
   }
 
-  init(options: VendorAPIOptions) {
+  init = (options: VendorAPIOptions) => {
     // todo: transform options => amplitude options
     const instance = this.getInstance();
     return new Promise<void>((resolve, reject) => {
@@ -43,7 +45,7 @@ export class AmplitudeAPI implements VendorAPI<Envs, AmplitudeAPIOptions> {
     })
   }
 
-  track(userData: any, eventData: any) {
+  track = (userData: any, eventData: any) => {
     const instance = this.getInstance();
     return new Promise<void>((resolve, reject) => {
       if(!instance) reject();
@@ -58,17 +60,17 @@ export class AmplitudeAPI implements VendorAPI<Envs, AmplitudeAPIOptions> {
     });
   }
 
-  getSessionId() {
+  getSessionId = () => {
     const instance = this.getInstance();
     return instance && instance.getSessionId();
   }
 
-  clearUserProperties() {
+  clearUserProperties = () => {
     const instance = this.getInstance();
     return instance && instance.clearUserProperties();
   }
 
-  controlTracking(value: boolean) {
+  controlTracking = (value: boolean) => {
     const instance = this.getInstance();
     if(!instance) return;
     instance.setOptOut(value);

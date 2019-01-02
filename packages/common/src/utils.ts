@@ -1,11 +1,11 @@
-import { Script, ScriptByEnvironment } from "./index";
+import { Script, ScriptByEnvironment, Env } from "./index";
 
 let _isDomReady = false, loadedScripts = new Set();
 const _ctx = Function('return this;')();
 export const isBrowser = _ctx && _ctx === _ctx.window;
 export const isLocalhost = isBrowser && ['localhost','127.0.0.1', ''].indexOf(_ctx.location.hostname.toLowerCase()) !== -1;
 
-export function scriptExists<T extends string>(scriptMap: ScriptByEnvironment<T>) {
+export function scriptExists<T extends Env>(scriptMap: ScriptByEnvironment<T>) {
   const scripts = _ctx.document.scripts;
   const targetScripts = flattenScripts(scriptMap).map(ts => ts.toLowerCase());
   let found = false;
@@ -82,16 +82,19 @@ const _localhostTrackingKey = '__localhostTracking__';
 
 const _localhostTracking = {
   on: () => _ctx.localStorage.setItem(_localhostTrackingKey, true),
+  status: () => _ctx.localStorage.getItem(_localhostTrackingKey),
   clear: () => _ctx.localStorage.removeItem(_localhostTrackingKey)
 };
+
+export const isLocalhostTrackingEnabled = () => !!_localhostTracking.status();
 
 (function selfRegister() {
   if(isBrowser && isLocalhost) {
     onDomReady().then(() => {
-      console.warn(`Use window.localhostTracking.on() to turn on tracking on ${_ctx.location.hostname}.`);
+      if(!isLocalhostTrackingEnabled()) {
+        console.warn(`Use window.localhostTracking.on() to turn on tracking on ${_ctx.location.hostname}.`);
+      }
       _ctx.localhostTracking = _localhostTracking;
     });
   }
 })();
-
-export const isLocalhostTrackingEnabled = () => !!_ctx.localStorage.getItem(_localhostTrackingKey);

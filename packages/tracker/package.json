@@ -9,7 +9,7 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
-    "@csod-oss/tracker-common": "0.0.1 - 1.x"
+    "@csod-oss/tracker-common": "0.0.1"
   },
   "scripts": {
     "build": "tsc -p ./"

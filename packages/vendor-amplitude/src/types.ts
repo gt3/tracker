@@ -1,4 +1,4 @@
-import { VendorAPIOptions } from "@csod-oss/tracker-common";
+import { VendorAPIOptions, Env } from "@csod-oss/tracker-common";
 
 export type PrivacyOptions = Record<
 'city'|'country'|'device_model'|'dma'|'ip_address'|'language'|'os_name'|'os_version'|'platform'|'region'|'version_name'
@@ -13,4 +13,4 @@ export type AmplitudeAPIOptions = VendorAPIOptions & {
   privacyOptions?: Partial<PrivacyOptions>;
 }
 
-export type Envs = 'development' | 'production';
+export type Env = Env & 'development' | 'production';
