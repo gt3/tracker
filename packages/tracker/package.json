@@ -1,6 +1,6 @@
 {
   "name": "@csod-oss/tracker",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -9,7 +9,7 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
-    "@csod-oss/tracker-common": "^0.0.2"
+    "@csod-oss/tracker-common": "^0.0.3"
   },
   "scripts": {
     "build": "tsc -p ./"

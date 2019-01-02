@@ -1,12 +1,12 @@
 {
   "name": "@csod-oss/tracker-vendor-amplitude",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "author": "",
   "license": "ISC",
   "main": "./build/index.js",
   "devDependencies": {
-    "@csod-oss/tracker-common": "^0.0.2",
+    "@csod-oss/tracker-common": "^0.0.3",
     "@types/amplitude-js": "^4.4.0",
     "typescript": "^3.2.2"
   },
