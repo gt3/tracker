@@ -11,6 +11,11 @@
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
     "clean": "lerna clean",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "publish": "lerna publish"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "http://registry.npmjs.org"
   }
 }
