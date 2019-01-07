@@ -1,7 +1,6 @@
 import { isBrowser, onDomReady, injectScript, scriptExists, isLocalhost, isLocalhostTrackingEnabled } from '@csod-oss/tracker-common/build/utils';
 import { VendorAPI, ScriptByEnvironment, VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
-import { load, pauseTracking, resumeTracking } from './actions';
-import { loadDone, setPendingAction, initDone, initFail, trackDone, trackFail } from './actions.internal';
+import { ActionCreators } from './actions';
 import { AnalyticsAction, AnalyticsTrackAction, AppSettings } from './types';
 
 export class Client<T extends VendorAPIOptions> {
@@ -10,12 +9,14 @@ export class Client<T extends VendorAPIOptions> {
   private _vendorAPI: VendorAPI<T>;
   private _appSettings: AppSettings;
   private _allScripts: ScriptByEnvironment;
+  private _ac: ActionCreators;
 
-  constructor(appSettings: AppSettings, VendorAPI: VendorAPIWrapper<T>) {
+  constructor(appSettings: AppSettings, VendorAPI: VendorAPIWrapper<T>, ac: ActionCreators) {
     const { env } = appSettings;
     this._vendorAPI = new VendorAPI(env);
     this._appSettings = appSettings;
     this._allScripts = VendorAPI.scripts;
+    this._ac = ac;
     this._times.created = new Date().getTime();
   }
 
@@ -34,13 +35,14 @@ export class Client<T extends VendorAPIOptions> {
         onDomReady().then(() => !this.loadInvoked ? resolve() : reject());
       }
       else reject();
-    }).then(load);
+    }).then(this._ac.load);
   }
 
   load() {
     if(this.loadInvoked) return Promise.reject(new Error('Load already called.'));
     this._times.loadStart = new Date().getTime();
     const { getScript, getInstance } = this._vendorAPI;
+    const { loadDone } = this._ac.internal;
     if(getInstance() || scriptExists(this._allScripts)) return Promise.resolve(loadDone());
     return Promise.all(getScript().map(injectScript)).then(loadDone);
   }
@@ -48,6 +50,7 @@ export class Client<T extends VendorAPIOptions> {
   loadDone() {
     this._times.loadEnd = new Date().getTime();
     let action = null;
+    const { pauseTracking, resumeTracking } = this._ac;
     if(isLocalhost) {
       action = !isLocalhostTrackingEnabled() ? pauseTracking() : resumeTracking();
     }
@@ -55,6 +58,7 @@ export class Client<T extends VendorAPIOptions> {
   }
 
   init(action: AnalyticsAction) {
+    const { setPendingAction, initDone, initFail } = this._ac.internal;
     // check if not loaded, add action to processing queue .. needed?
     if(!this.loadCompleted) return Promise.resolve(setPendingAction(action));
     this._times.initStart = new Date().getTime();
@@ -79,6 +83,7 @@ export class Client<T extends VendorAPIOptions> {
   }
 
   track(action: AnalyticsTrackAction) {
+    const { setPendingAction, trackDone, trackFail } = this._ac.internal;
     // check if not loaded, add action to processing queue .. needed?
     if(!this.loadCompleted) return Promise.resolve(setPendingAction(action));
     return this._vendorAPI.track(action.payload.userData, action.payload.eventData)

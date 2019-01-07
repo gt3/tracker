@@ -1,3 +1,3 @@
 export * from './middleware';
-export * from './actions';
+export { default as getActionCreators } from './actions';
 export * from './types';
