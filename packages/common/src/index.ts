@@ -1,6 +1,8 @@
 export type EnvType = string;
 export type Env = EnvType & 'development' | 'production';
 
+export type VendorKey = 'amplitude';
+
 export type VendorAPIOptions = {
   apiKey: string;
 }
@@ -27,6 +29,6 @@ export type VendorAPI<T extends VendorAPIOptions, V extends EnvType = Env> = {
 export interface VendorAPIWrapper<T extends VendorAPIOptions, V extends EnvType = Env> {
   new(env: V): VendorAPI<T, V>;
   scripts: ScriptByEnvironment<V>;
-  vendorKey: string;
+  vendorKey: VendorKey;
 }
 

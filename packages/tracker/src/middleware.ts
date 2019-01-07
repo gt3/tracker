@@ -1,7 +1,8 @@
 import { Client } from './client';
 import { VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
-import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track, ANALYTICS, PAUSE_ANALYTICS_TRACKING, RESUME_ANALYTICS_TRACKING } from './actions';
-import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE, bufferedActions, BUFFERED_ANALYTICS_ACTIONS } from './actions.internal';
+// import { LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, track, ANALYTICS, PAUSE_ANALYTICS_TRACKING, RESUME_ANALYTICS_TRACKING } from './actions';
+// import { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE, bufferedActions, BUFFERED_ANALYTICS_ACTIONS } from './actions.internal';
+import getActionCreators, { ActionCreators } from './actions';
 import { Store, Reducer, AnyAction, Dispatch } from 'redux';
 import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData, AppSettings } from './types';
 import { flatten1 } from '@csod-oss/tracker-common/build/utils';
@@ -18,7 +19,8 @@ const resolveWithState = (state: any, data: any) => {
   return newData;
 }
 
-function resolveToTrackAction(action: AnalyticsTrackActionThunkable, state: any): AnalyticsTrackAction {
+function resolveToTrackAction(action: AnalyticsTrackActionThunkable, state: any, ac: ActionCreators): AnalyticsTrackAction {
+  const { track } = ac;  
   if(!action.payload) {
     return track(action.payload);
   }
@@ -31,7 +33,8 @@ function resolveToTrackAction(action: AnalyticsTrackActionThunkable, state: any)
   return track(newPayload);
 }
 
-function processBufferedActions(store: { dispatch: any, getState: any }, next: any, pactions: Promise<BufferedActionReturnTypes>[]) {
+function processBufferedActions(store: { dispatch: any, getState: any }, next: any, pactions: Promise<BufferedActionReturnTypes>[], ac: ActionCreators) {
+  const { bufferedActions } = ac.internal;
   if(pactions.length > 0) {
     Promise.all(pactions)
     .then(actions => flatten1(actions))
@@ -71,8 +74,10 @@ const dispatchBuffer = () => {
 
 export type GetVendorAPIOptions<T> = () => Promise<T|null|void>;
 
-function createTrackerMiddleware<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>) {
-  const _client = new Client(appSettings, API);
+function createTrackerMiddleware<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>, ac: ActionCreators) {
+  const { prefix, LOAD_ANALYTICS, INIT_ANALYTICS, init, TRACK_ANALYTICS, TRACK_ANALYTICS_WITH_STATE, PAUSE_ANALYTICS_TRACKING, RESUME_ANALYTICS_TRACKING } = ac;
+  const { LOAD_ANALYTICS_DONE, dispatchPendingActions, DISPATCH_PENDING_ANALYTICS_ACTIONS, SET_PENDING_ANALYTICS_ACTION, INIT_ANALYTICS_DONE } = ac.internal;
+  const _client = new Client(appSettings, API, ac);
   return (store: { dispatch: any, getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
     const { getBufferedActions, bufferDispatch, reset } = dispatchBuffer();
@@ -103,7 +108,7 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(appSettings: AppSet
         bufferDispatch(_client.track(action as AnalyticsTrackAction));
       }
       else if(action.type === TRACK_ANALYTICS_WITH_STATE) {
-        const resolved = resolveToTrackAction(action as AnalyticsTrackActionThunkable, store.getState());
+        const resolved = resolveToTrackAction(action as AnalyticsTrackActionThunkable, store.getState(), ac);
         bufferDispatch(Promise.resolve(resolved));
       }
       else if(action.type === PAUSE_ANALYTICS_TRACKING) {
@@ -113,7 +118,7 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(appSettings: AppSet
         _client.controlTracking(false);
       }
       else {
-        if(action.type && action.type.indexOf(ANALYTICS) === 0) {
+        if(action.type && action.type.indexOf(prefix) === 0) {
           return;
         }
         else {
@@ -122,14 +127,14 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(appSettings: AppSet
       }
       let pactions = getBufferedActions();
       reset();
-      processBufferedActions(store, next, pactions);
+      processBufferedActions(store, next, pactions, ac);
     }
   }
 }
 
-function buferedActionsEnhanceReducer(reducer: Reducer) {
+function buferedActionsEnhanceReducer(reducer: Reducer, ac: ActionCreators) {
 	return (state: any, action: any) => {
-    if (action.type === BUFFERED_ANALYTICS_ACTIONS) {
+    if (action.type === ac.internal.BUFFERED_ANALYTICS_ACTIONS) {
       state = action.meta.reduce(reducer, state);
     }
     else {
@@ -140,9 +145,10 @@ function buferedActionsEnhanceReducer(reducer: Reducer) {
 }
 
 export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(appSettings: AppSettings, API: VendorAPIWrapper<T>, getAPIOptions: GetVendorAPIOptions<T>) {
-  const middleware = createTrackerMiddleware(appSettings, API, getAPIOptions);
+  const ac = getActionCreators(API.vendorKey);
+  const middleware = createTrackerMiddleware(appSettings, API, getAPIOptions, ac);
 	return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
-		let store = createStore(buferedActionsEnhanceReducer(reducer), initialState, ...args);
+		let store = createStore(buferedActionsEnhanceReducer(reducer, ac), initialState, ...args);
     let dispatch: any = (action: any) => void(0);
     const middlewareAPI = {
       getState: store.getState,
