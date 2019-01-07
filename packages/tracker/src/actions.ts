@@ -4,17 +4,21 @@ import { VendorAPIOptions, VendorKey } from '@csod-oss/tracker-common';
 import { AnalyticsAction, AnalyticsTrackAction, TrackActionPayload, AnalyticsTrackActionThunkable, UserData, EventData, UserDataThunkable, EventDataThunkable } from './types';
 import { memo1 } from '@csod-oss/tracker-common/build/utils';
 
-function getActionCreators(prefix: VendorKey) {
+export default memo1(getActionCreators);
+
+function getActionCreators(vendorKey: VendorKey) {
+  const prefix = `[${vendorKey}]`;
+
   const ac: ActionCreators = {
-    prefix: `[${prefix}]`,
+    prefix,
 
     // command action types
-    LOAD_ANALYTICS: `[${prefix}] LOAD`,
-    INIT_ANALYTICS: `[${prefix}] INIT`,
-    TRACK_ANALYTICS: `[${prefix}] TRACK`,
-    TRACK_ANALYTICS_WITH_STATE: `[${prefix}] TRACK_WITH_STATE`,
-    PAUSE_ANALYTICS_TRACKING: `[${prefix}] PAUSE_TRACKING`,
-    RESUME_ANALYTICS_TRACKING: `[${prefix}] RESUME_TRACKING`,
+    LOAD_ANALYTICS: `${prefix} LOAD`,
+    INIT_ANALYTICS: `${prefix} INIT`,
+    TRACK_ANALYTICS: `${prefix} TRACK`,
+    TRACK_ANALYTICS_WITH_STATE: `${prefix} TRACK_WITH_STATE`,
+    PAUSE_ANALYTICS_TRACKING: `${prefix} PAUSE_TRACKING`,
+    RESUME_ANALYTICS_TRACKING: `${prefix} RESUME_TRACKING`,
 
     load: () => ({
       type: ac.LOAD_ANALYTICS
@@ -50,23 +54,21 @@ function getActionCreators(prefix: VendorKey) {
   return ac;
 }
 
-export default memo1(getActionCreators);
-
-function getInternalActionCreators(prefix: VendorKey) {
+function getInternalActionCreators(prefix: string) {
   const ac: InternalActionCreators = {
     // command action types
-    DISPATCH_PENDING_ANALYTICS_ACTIONS: `[${prefix}] DISPATCH_PENDING_ACTIONS`,
+    DISPATCH_PENDING_ANALYTICS_ACTIONS: `${prefix} DISPATCH_PENDING_ACTIONS`,
 
     // event action types
-    LOAD_ANALYTICS_DONE: `[${prefix}] LOAD_DONE`,
-    INIT_ANALYTICS_DONE: `[${prefix}] INIT_DONE`,
-    INIT_ANALYTICS_ERR: `[${prefix}] INIT_ERR`,
-    TRACK_ANALYTICS_DONE: `[${prefix}] TRACK_DONE`,
-    TRACK_ANALYTICS_ERR: `[${prefix}] TRACK_ERR`,
-    BUFFERED_ANALYTICS_ACTIONS: `[${prefix}] BUFFERED_ACTIONS`,
+    LOAD_ANALYTICS_DONE: `${prefix} LOAD_DONE`,
+    INIT_ANALYTICS_DONE: `${prefix} INIT_DONE`,
+    INIT_ANALYTICS_ERR: `${prefix} INIT_ERR`,
+    TRACK_ANALYTICS_DONE: `${prefix} TRACK_DONE`,
+    TRACK_ANALYTICS_ERR: `${prefix} TRACK_ERR`,
+    BUFFERED_ANALYTICS_ACTIONS: `${prefix} BUFFERED_ACTIONS`,
 
     // document action types
-    SET_PENDING_ANALYTICS_ACTION: `[${prefix}] SET_PENDING_ACTION`,
+    SET_PENDING_ANALYTICS_ACTION: `${prefix} SET_PENDING_ACTION`,
 
     loadDone: () => ({
       type: ac.LOAD_ANALYTICS_DONE
@@ -150,4 +152,3 @@ export type ActionCreators = {
   resumeTracking: () => AnalyticsAction;
   internal: InternalActionCreators;
 };
-
