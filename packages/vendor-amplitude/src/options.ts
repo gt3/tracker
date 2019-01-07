@@ -1,6 +1,6 @@
 import { VendorAPIOptions } from '@csod-oss/tracker-common';
 
-export type PrivacyOptions = Record<
+export type TrackingOptions = Record<
 'carrier'|'city'|'country'|'device_model'|'dma'|'ip_address'|'language'|'os_name'|'os_version'|'platform'|'region'|'version_name'
 , boolean>;
 
@@ -10,7 +10,7 @@ export type AmplitudeAPIOptions = VendorAPIOptions & {
   logLevel?: 'DISABLE' | 'ERROR' | 'WARN' | 'INFO';
   optOut?: boolean;
   platform?: string;
-  privacyOptions?: Partial<PrivacyOptions>;
+  trackingOptions?: Partial<TrackingOptions>;
   saveEvents?: boolean;
   sessionTimeout?: number;
 }
@@ -20,9 +20,9 @@ function merge(defaults: any, target: any = {}) {
   return {...defaults, ...target};
 }
 
-export function mergeDefaults(defaults: Partial<AmplitudeAPIOptions>, options: AmplitudeAPIOptions) {
+export function mergeDefaults(defaults: Partial<AmplitudeAPIOptions>, options: AmplitudeAPIOptions): AmplitudeAPIOptions {
   if(!options || !defaults) return options;
-  const { privacyOptions: _privacyOptions, ..._rest } = defaults;
-  const { privacyOptions, ...rest } = options;
-  return { trackingOptions: merge(_privacyOptions, privacyOptions), ...merge(_rest, rest) };
+  const { trackingOptions: _trackingOptions, ..._rest } = defaults;
+  const { trackingOptions, ...rest } = options;
+  return { trackingOptions: merge(_trackingOptions, trackingOptions), ...merge(_rest, rest) };
 }

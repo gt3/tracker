@@ -25,7 +25,7 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
     logLevel: 'DISABLE',
     saveEvents: false,
     /* allow dma, os, platform, region, version_name */
-    privacyOptions: {
+    trackingOptions: {
       carrier: false,
       city: false,
       country: false,
