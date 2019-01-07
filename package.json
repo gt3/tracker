@@ -2,9 +2,10 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "lerna": "^3.8.0",
     "@types/jest": "^23.3.10",
     "@types/node": "^10.12.14",
+    "lerna": "^3.8.0",
+    "prettier": "^1.12.1",
     "redux": "^4.0.1",
     "typescript": "^3.2.2"
   },

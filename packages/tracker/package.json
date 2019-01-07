@@ -6,13 +6,15 @@
   "license": "ISC",
   "main": "./build/index.js",
   "devDependencies": {
+    "prettier": "1.12.1",
     "typescript": "^3.2.2"
   },
   "dependencies": {
     "@csod-oss/tracker-common": "^0.0.5"
   },
   "scripts": {
-    "build": "tsc -p ./"
+    "format": "prettier --parser typescript --single-quote --print-width 130 --write \"{src,tests}/**/*.{ts,tsx}\"",
+    "build": "npm run format && tsc -p ./"
   },
   "files": [
     "build"

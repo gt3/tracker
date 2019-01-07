@@ -9,7 +9,7 @@ export type AnalyticsAction = Action & {
 
 export type EventData = SerializeableRecord<SerializeablePrimitives> & {
   eventName: string;
-}
+};
 
 export type EventDataThunkable = {
   eventName: string;
@@ -22,20 +22,20 @@ export type UserDataThunkable = {
   [key: string]: Serializable | ValueThunk<Serializable>;
 };
 
-export type TrackActionPayload<T,U> = {
+export type TrackActionPayload<T, U> = {
   userData?: T;
   eventData?: U;
-}
+};
 
 export type AnalyticsTrackAction = Action & {
-  payload: TrackActionPayload<UserData, EventData>
-}
+  payload: TrackActionPayload<UserData, EventData>;
+};
 
 export type AnalyticsTrackActionThunkable = Action & {
-  payload: TrackActionPayload<UserDataThunkable, EventDataThunkable>
-}
+  payload: TrackActionPayload<UserDataThunkable, EventDataThunkable>;
+};
 
 export type AppSettings<V extends EnvType = Env> = {
   env: V;
   preventAutoLoadInit?: boolean;
-}
+};

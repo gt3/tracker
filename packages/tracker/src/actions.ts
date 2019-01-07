@@ -1,7 +1,16 @@
 import { VendorAPIOptions, VendorKey } from '@csod-oss/tracker-common';
 
 //types
-import { AnalyticsAction, AnalyticsTrackAction, TrackActionPayload, AnalyticsTrackActionThunkable, UserData, EventData, UserDataThunkable, EventDataThunkable } from './types';
+import {
+  AnalyticsAction,
+  AnalyticsTrackAction,
+  TrackActionPayload,
+  AnalyticsTrackActionThunkable,
+  UserData,
+  EventData,
+  UserDataThunkable,
+  EventDataThunkable
+} from './types';
 import { memo1 } from '@csod-oss/tracker-common/build/utils';
 
 export default memo1(getActionCreators);
@@ -23,28 +32,28 @@ function getActionCreators(vendorKey: VendorKey) {
     load: () => ({
       type: ac.LOAD_ANALYTICS
     }),
-    
-    init: (payload) => {
-      return ({
+
+    init: payload => {
+      return {
         type: ac.INIT_ANALYTICS,
         payload
-      });
+      };
     },
-    
-    track: (payload) => ({
+
+    track: payload => ({
       type: ac.TRACK_ANALYTICS,
       payload
     }),
-    
-    trackWithState: (payload) => ({
+
+    trackWithState: payload => ({
       type: ac.TRACK_ANALYTICS_WITH_STATE,
       payload
     }),
-    
+
     pauseTracking: () => ({
       type: ac.PAUSE_ANALYTICS_TRACKING
     }),
-    
+
     resumeTracking: () => ({
       type: ac.RESUME_ANALYTICS_TRACKING
     }),
@@ -73,39 +82,38 @@ function getInternalActionCreators(prefix: string) {
     loadDone: () => ({
       type: ac.LOAD_ANALYTICS_DONE
     }),
-    
+
     initDone: () => ({
       type: ac.INIT_ANALYTICS_DONE
     }),
-    
+
     initFail: (err?: any) => ({
       type: ac.INIT_ANALYTICS_ERR,
       payload: err
     }),
-    
+
     trackDone: () => ({
       type: ac.TRACK_ANALYTICS_DONE
     }),
-    
-    trackFail: (err) => ({
+
+    trackFail: err => ({
       type: ac.TRACK_ANALYTICS_ERR,
       payload: err
     }),
-    
+
     dispatchPendingActions: () => ({
       type: ac.DISPATCH_PENDING_ANALYTICS_ACTIONS
     }),
-    
-    setPendingAction: (action) => ({
+
+    setPendingAction: action => ({
       type: ac.SET_PENDING_ANALYTICS_ACTION,
       meta: action
     }),
-    
-    bufferedActions: (actions) => ({
+
+    bufferedActions: actions => ({
       type: ac.BUFFERED_ANALYTICS_ACTIONS,
       meta: actions
     })
-
   };
   return ac;
 }
@@ -145,7 +153,7 @@ export type ActionCreators = {
   PAUSE_ANALYTICS_TRACKING: string;
   RESUME_ANALYTICS_TRACKING: string;
   load: () => AnalyticsAction;
-  init: <T extends VendorAPIOptions> (payload: T) => AnalyticsAction;
+  init: <T extends VendorAPIOptions>(payload: T) => AnalyticsAction;
   track: (payload: TrackActionPayload<UserData, EventData>) => AnalyticsTrackAction;
   trackWithState: (payload: TrackActionPayload<UserDataThunkable, EventDataThunkable>) => AnalyticsTrackActionThunkable;
   pauseTracking: () => AnalyticsAction;

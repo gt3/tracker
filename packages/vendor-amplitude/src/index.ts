@@ -33,7 +33,7 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
       language: false
     }
   };
-  
+
   env: Env;
 
   constructor(env: Env) {
@@ -42,54 +42,54 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
 
   getInstance = () => {
     return getInstance<amplitude.AmplitudeClient>(AmplitudeAPI.vendorKey);
-  }
+  };
 
   getScript = () => {
     return AmplitudeAPI.scripts[this.env];
-  }
+  };
 
   getFinalOptions = (options: AmplitudeAPIOptions) => {
     return mergeDefaults(AmplitudeAPI.defaultAPIOptions, options);
-  }
+  };
 
   init = (options: AmplitudeAPIOptions) => {
     // todo: transform options => amplitude options
     const instance = this.getInstance();
     return new Promise<void>((resolve, reject) => {
-      if(!instance) reject();
+      if (!instance) reject();
       const { apiKey, ...rest } = this.getFinalOptions(options);
       instance.init(apiKey, undefined, rest, () => resolve());
-    })
-  }
+    });
+  };
 
   track = (userData: any, eventData: any) => {
     const instance = this.getInstance();
     return new Promise<void>((resolve, reject) => {
-      if(!instance) reject();
-      if(userData && Object.keys(userData).length > 0) {
+      if (!instance) reject();
+      if (userData && Object.keys(userData).length > 0) {
         instance.setUserProperties(userData);
       }
-      if(eventData) {
+      if (eventData) {
         const { eventName, ...rest } = eventData;
         instance.logEvent(eventName, rest);
       }
       resolve();
     });
-  }
+  };
 
   getSessionId = () => {
     const instance = this.getInstance();
     return instance && instance.getSessionId();
-  }
+  };
 
   clearUserProperties = () => {
     const instance = this.getInstance();
     return instance && instance.clearUserProperties();
-  }
+  };
 
   controlTracking = (value: boolean) => {
     const instance = this.getInstance();
-    if(!instance) return;
+    if (!instance) return;
     instance.setOptOut(value);
-  }
+  };
 }

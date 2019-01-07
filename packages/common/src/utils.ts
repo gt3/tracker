@@ -1,18 +1,19 @@
-import { Script, ScriptByEnvironment, EnvType, Env } from "./index";
+import { Script, ScriptByEnvironment, EnvType, Env } from './index';
 
-let _isDomReady = false, loadedScripts = new Set();
+let _isDomReady = false,
+  loadedScripts = new Set();
 const _ctx = Function('return this;')();
 export const isBrowser = _ctx && _ctx === _ctx.window;
-export const isLocalhost = isBrowser && ['localhost','127.0.0.1', ''].indexOf(_ctx.location.hostname.toLowerCase()) !== -1;
+export const isLocalhost = isBrowser && ['localhost', '127.0.0.1', ''].indexOf(_ctx.location.hostname.toLowerCase()) !== -1;
 
 export function scriptExists(scriptMap: ScriptByEnvironment) {
   const scripts = _ctx.document.scripts;
   const targetScripts = flattenScripts(scriptMap).map(ts => ts.toLowerCase());
   let found = false;
-  if(scripts) {
-    for(let i=0; i < scripts.length; i++) {
+  if (scripts) {
+    for (let i = 0; i < scripts.length; i++) {
       let src = scripts[i].src;
-      if(src && targetScripts.indexOf(src.toLowerCase()) !== -1) {
+      if (src && targetScripts.indexOf(src.toLowerCase()) !== -1) {
         found = true;
         break;
       }
@@ -23,8 +24,8 @@ export function scriptExists(scriptMap: ScriptByEnvironment) {
 
 export function onDomReady() {
   return new Promise((resolve, reject) => {
-    if(_isDomReady) return resolve();
-    if(!isBrowser) return reject(new Error("Attempt to invoke dom functionality in a non-browser environment."));
+    if (_isDomReady) return resolve();
+    if (!isBrowser) return reject(new Error('Attempt to invoke dom functionality in a non-browser environment.'));
     document.addEventListener('DOMContentLoaded', () => {
       _isDomReady = true;
       resolve();
@@ -35,10 +36,10 @@ export function onDomReady() {
 export function injectScript(script: Script) {
   const { src, integrity, crossorigin = 'anonymous' } = script;
   return new Promise((resolve, reject) => {
-    if(!isBrowser) {
-      return reject(new Error("Attempt to invoke dom functionality in a non-browser environment."));
+    if (!isBrowser) {
+      return reject(new Error('Attempt to invoke dom functionality in a non-browser environment.'));
     }
-    if(loadedScripts.has(src)) {
+    if (loadedScripts.has(src)) {
       return resolve();
     }
     const loaded = () => {
@@ -54,7 +55,7 @@ export function injectScript(script: Script) {
     script.async = true;
     script.onload = loaded;
     script.onerror = failed;
-    if(integrity) {
+    if (integrity) {
       script.integrity = integrity;
       script.crossorigin = crossorigin;
     }
@@ -68,17 +69,17 @@ export function injectScript(script: Script) {
 export function memo1(fn: Function) {
   const cache = new Map();
   function wrapper(arg: string) {
-    if(cache.has(arg)) return cache.get(arg);
+    if (cache.has(arg)) return cache.get(arg);
     const res = fn.call(this, arg);
     cache.set(arg, res);
     return res;
-  };
+  }
   return wrapper;
 }
 
 export function flatten1(arr: any[]) {
   return arr.reduce((acc, cur) => {
-    if(Array.isArray(cur)) acc.push(...cur);
+    if (Array.isArray(cur)) acc.push(...cur);
     else acc.push(cur);
     return acc;
   }, []);
@@ -103,9 +104,9 @@ const _localhostTracking = {
 export const isLocalhostTrackingEnabled = () => !!_localhostTracking.status();
 
 (function selfRegister() {
-  if(isBrowser && isLocalhost) {
+  if (isBrowser && isLocalhost) {
     onDomReady().then(() => {
-      if(!isLocalhostTrackingEnabled()) {
+      if (!isLocalhostTrackingEnabled()) {
         console.warn(`Use window.localhostTracking.on() to turn on tracking on ${_ctx.location.hostname}.`);
       }
       _ctx.localhostTracking = _localhostTracking;
