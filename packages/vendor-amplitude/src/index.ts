@@ -1,21 +1,11 @@
-import { Env, VendorAPI, VendorAPIOptions, ScriptByEnvironment } from '@csod-oss/tracker-common';
+import { Env, VendorAPI, ScriptByEnvironment } from '@csod-oss/tracker-common';
 import { getInstance } from './instance';
-
-export type PrivacyOptions = Record<
-'city'|'country'|'device_model'|'dma'|'ip_address'|'language'|'os_name'|'os_version'|'platform'|'region'|'version_name'
-, boolean>;
-
-export type AmplitudeAPIOptions = VendorAPIOptions & {
-  deviceId?: string;
-  // language?: string;
-  logLevel?: 'DISABLE' | 'ERROR' | 'WARN' | 'INFO';
-  optOut?: boolean;
-  platform?: string;
-  privacyOptions?: Partial<PrivacyOptions>;
-}
+import { AmplitudeAPIOptions, mergeDefaults } from './options';
+export { AmplitudeAPIOptions } from './options';
 
 export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
   static vendorKey = 'amplitude';
+
   static scripts: ScriptByEnvironment = {
     development: [
       {
@@ -29,6 +19,19 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
         crossorigin: 'anonymous'
       }
     ]
+  };
+
+  static defaultAPIOptions: Partial<AmplitudeAPIOptions> = {
+    logLevel: 'DISABLE',
+    saveEvents: false,
+    /* allow dma, os, platform, region, version_name */
+    privacyOptions: {
+      carrier: false,
+      city: false,
+      country: false,
+      ip_address: false,
+      language: false
+    }
   };
   
   env: Env;
@@ -45,12 +48,16 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
     return AmplitudeAPI.scripts[this.env];
   }
 
-  init = (options: VendorAPIOptions) => {
+  getFinalOptions = (options: AmplitudeAPIOptions) => {
+    return mergeDefaults(AmplitudeAPI.defaultAPIOptions, options);
+  }
+
+  init = (options: AmplitudeAPIOptions) => {
     // todo: transform options => amplitude options
     const instance = this.getInstance();
     return new Promise<void>((resolve, reject) => {
       if(!instance) reject();
-      const { apiKey, ...rest } = options;
+      const { apiKey, ...rest } = this.getFinalOptions(options);
       instance.init(apiKey, undefined, rest, () => resolve());
     })
   }
