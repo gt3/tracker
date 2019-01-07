@@ -62,6 +62,20 @@ export function injectScript(script: Script) {
   });
 }
 
+/**
+ * Memoize function call for fn that accepts one string argument
+ */
+export function memo1(fn: Function) {
+  const cache = new Map();
+  function wrapper(arg: string) {
+    if(cache.has(arg)) return cache.get(arg);
+    const res = fn.call(this, arg);
+    cache.set(arg, res);
+    return res;
+  };
+  return wrapper;
+}
+
 export function flatten1(arr: any[]) {
   return arr.reduce((acc, cur) => {
     if(Array.isArray(cur)) acc.push(...cur);
