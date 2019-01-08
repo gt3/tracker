@@ -70,7 +70,7 @@ const enhancer = compose(
 export const store = createStore(rootReducer, {}, enhancer);
 ```
 
-### 4. Use provided action creators to create actions
+### 4. Create actions
 
 Create tracking actions by providing a payload to the action creator. The payload consists of two properties `userData` (user properties) and `eventData` (event properties) of type {object}.
 

@@ -5,10 +5,9 @@ import { flatten1 } from '@csod-oss/tracker-common/build/utils';
 export type BufferedActionReturnTypes = AnyAction | AnyAction[] | null | void;
 
 export type DispatchBufferType<T = BufferedActionReturnTypes> = {
-  getBufferedActions: () => Promise<T>[];
-  bufferDispatch: (...pactions: Promise<T>[]) => number;
+  bufferActions: (...pactions: Promise<T>[]) => number;
   reset: () => void;
-  processBufferedActions: (next: any) => void;
+  dispatchBufferedActions: (next: any) => void;
 };
 
 export class DispatchBuffer implements DispatchBufferType {
@@ -21,13 +20,11 @@ export class DispatchBuffer implements DispatchBufferType {
     this._ac = ac;
   }
 
-  getBufferedActions = () => this._pactions;
-
-  bufferDispatch = (...pactions: Promise<BufferedActionReturnTypes>[]) => this._pactions.push(...pactions);
+  bufferActions = (...pactions: Promise<BufferedActionReturnTypes>[]) => this._pactions.push(...pactions);
 
   reset = () => (this._pactions = []);
 
-  processBufferedActions = (next: any) => {
+  dispatchBufferedActions = (next: any) => {
     const { bufferedActions } = this._ac.internal;
     const pactions = this._pactions;
     this.reset();

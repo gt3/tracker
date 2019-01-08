@@ -34,29 +34,29 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
   const _client = new Client(appSettings, API, ac);
   return (store: { dispatch: any; getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
-    const { bufferDispatch, processBufferedActions } = new DispatchBuffer(store, ac);
+    const { bufferActions, dispatchBufferedActions } = new DispatchBuffer(store, ac);
     return (next: any) => (action: AnyAction) => {
       if (action.type === LOAD_ANALYTICS) {
-        bufferDispatch(_client.load());
+        bufferActions(_client.load());
       } else if (action.type === LOAD_ANALYTICS_DONE) {
-        bufferDispatch(_client.loadDone());
+        bufferActions(_client.loadDone());
         const initDispatchPromise = getAPIOptions().then(apiOptions => {
           return apiOptions && [init(apiOptions), dispatchPendingActions()];
         }, () => null);
-        bufferDispatch(initDispatchPromise);
+        bufferActions(initDispatchPromise);
       } else if (action.type === INIT_ANALYTICS) {
-        bufferDispatch(_client.init(action));
+        bufferActions(_client.init(action));
       } else if (action.type === INIT_ANALYTICS_DONE) {
         _client.initDone();
       } else if (action.type === DISPATCH_PENDING_ANALYTICS_ACTIONS) {
-        bufferDispatch(_client.dispatchPendingActions());
+        bufferActions(_client.dispatchPendingActions());
       } else if (action.type === SET_PENDING_ANALYTICS_ACTION) {
         _client.savePendingAction(action.meta);
       } else if (action.type === TRACK_ANALYTICS) {
-        bufferDispatch(_client.track(action as AnalyticsTrackAction));
+        bufferActions(_client.track(action as AnalyticsTrackAction));
       } else if (action.type === TRACK_ANALYTICS_WITH_STATE) {
         const resolved = resolveToTrackAction(action as AnalyticsTrackActionThunkable, store.getState());
-        bufferDispatch(Promise.resolve(resolved));
+        bufferActions(Promise.resolve(resolved));
       } else if (action.type === PAUSE_ANALYTICS_TRACKING) {
         _client.controlTracking(true);
       } else if (action.type === RESUME_ANALYTICS_TRACKING) {
@@ -68,7 +68,7 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
           return next(action);
         }
       }
-      processBufferedActions(next);
+      dispatchBufferedActions(next);
     };
   };
 }
