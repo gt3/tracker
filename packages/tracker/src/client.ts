@@ -8,17 +8,17 @@ import {
 } from '@csod-oss/tracker-common/build/utils';
 import { VendorAPI, ScriptByEnvironment, VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import { ActionCreators } from './actions';
-import { AnalyticsAction, AnalyticsTrackAction, AppSettings } from './types';
+import { AnalyticsAction, AnalyticsTrackAction, MiddlewareSettings } from './types';
 
 export class Client<T extends VendorAPIOptions> {
   private _times: Partial<Times> = {};
   private _pendingActions = new Set<AnalyticsAction>();
   private _vendorAPI: VendorAPI<T>;
-  private _appSettings: AppSettings;
+  private _appSettings: MiddlewareSettings;
   private _allScripts: ScriptByEnvironment;
   private _ac: ActionCreators;
 
-  constructor(appSettings: AppSettings, VendorAPI: VendorAPIWrapper<T>, ac: ActionCreators) {
+  constructor(appSettings: MiddlewareSettings, VendorAPI: VendorAPIWrapper<T>, ac: ActionCreators) {
     const { env } = appSettings;
     this._vendorAPI = new VendorAPI(env);
     this._appSettings = appSettings;

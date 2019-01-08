@@ -8,7 +8,7 @@ import {
   TrackActionPayload,
   UserData,
   EventData,
-  AppSettings
+  MiddlewareSettings
 } from './types';
 import { flatten1 } from '@csod-oss/tracker-common/build/utils';
 
@@ -86,7 +86,7 @@ const dispatchBuffer = () => {
 export type GetVendorAPIOptions<T> = () => Promise<T | null | void>;
 
 function createTrackerMiddleware<T extends VendorAPIOptions>(
-  appSettings: AppSettings,
+  appSettings: MiddlewareSettings,
   API: VendorAPIWrapper<T>,
   getAPIOptions: GetVendorAPIOptions<T>,
   ac: ActionCreators
@@ -164,7 +164,7 @@ function buferedActionsEnhanceReducer(reducer: Reducer, ac: ActionCreators) {
 }
 
 export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(
-  appSettings: AppSettings,
+  appSettings: MiddlewareSettings,
   API: VendorAPIWrapper<T>,
   getAPIOptions: GetVendorAPIOptions<T>
 ) {

@@ -35,7 +35,7 @@ export type AnalyticsTrackActionThunkable = Action & {
   payload: TrackActionPayload<UserDataThunkable, EventDataThunkable>;
 };
 
-export type AppSettings<V extends EnvType = Env> = {
+export type MiddlewareSettings<V extends EnvType = Env> = {
   env: V;
   preventAutoLoadInit?: boolean;
 };
