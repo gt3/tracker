@@ -1,6 +1,6 @@
 Use this library to integrate analytics vendor SDKs with your JavaScript app.
 
-### Goals
+## Goals
 - Abstract out vendor specific implementation to integrate with multiple vendors through a common API.
 - Provide seamless integration for Redux-based apps.
   - Use middleware to communicate with vendor SDK.
