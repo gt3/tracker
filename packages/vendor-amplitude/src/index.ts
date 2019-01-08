@@ -1,10 +1,10 @@
-import { Env, VendorAPI, ScriptByEnvironment } from '@csod-oss/tracker-common';
+import { Env, VendorAPI, ScriptByEnvironment, VendorKey } from '@csod-oss/tracker-common';
 import { getInstance } from './instance';
 import { AmplitudeAPIOptions, mergeDefaults } from './options';
 export { AmplitudeAPIOptions } from './options';
 
 export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
-  static vendorKey = 'amplitude';
+  static vendorKey: VendorKey = 'amplitude';
 
   static scripts: ScriptByEnvironment = {
     development: [
