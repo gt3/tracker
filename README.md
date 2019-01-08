@@ -1,11 +1,13 @@
-Use this library to integrate analytics vendor sdks with your JavaScript app.
+Use this library to integrate analytics vendor SDKs with your JavaScript app.
 
-### Benefits
-- Abstract out vendor specific implementation so your app can integrate with multiple vendors with a common API.
+### Goals
+- Abstract out vendor specific implementation to integrate with multiple vendors through a common API.
+- Provide seamless integration for Redux-based apps.
+  - Use middleware to communicate with vendor SDK.
+  - Dispatch actions to manage tracking behavior.
+  - Dispatch actions to track user activity.
+  - Integrate with developer tools without additional configuration.
 - Enforce consistency with Typescript types.
-- Redux-friendly
-  - Action-oriented design
-  - Easy integration with developer tools
 
 
 ## Quick start
@@ -24,18 +26,16 @@ There are two primary configuration options that the middleware accepts:
 2. `VendorAPIOptions` - controls Vendor SDK behavior (used during initialization).
 
 ```typescript
-// [createTrackerStoreEnhancer] creates the store enhancer/middleware
 // [MiddlewareSettings] is a type for configuration
-import { createTrackerStoreEnhancer, MiddlewareSettings } from '@csod-oss/tracker';
-
-// To use Amplitude as a vendor, import the API [AmplitudeAPI]
-// [AmplitudeAPIOptions] is a type for API configuration
-import { AmplitudeAPI, AmplitudeAPIOptions } from '@csod-oss/tracker-vendor-amplitude';
+import { MiddlewareSettings } from '@csod-oss/tracker';
 
 // create config object of type [MiddlewareSettings]
-const trackerSettings: MiddlewareSettings = {
+const middlewareSettings: MiddlewareSettings = {
   env: 'development'
 };
+
+// [AmplitudeAPIOptions] is a type for API configuration for Amplitude SDK
+import { AmplitudeAPIOptions } from '@csod-oss/tracker-vendor-amplitude';
 
 // write a function that returns a Promise that resolves to [AmplitudeAPIOptions]
 // () => Promise<AmplitudeAPIOptions>
@@ -48,13 +48,21 @@ const getVendorAPIOptions = () => Promise.resolve({ apiKey: 'vendor-api-key' });
 This part involves setting up the tracker middleware to prepare your app to send tracking events. To add the middleware, you'll use the `createTrackerStoreEnhancer` factory function and pass the result (store enhancer) to Redux's `createStore` function.
 
 ```typescript
+// [createTrackerStoreEnhancer] creates the store enhancer/middleware
+import { createTrackerStoreEnhancer } from '@csod-oss/tracker';
+
+// To use Amplitude as a vendor, import the API [AmplitudeAPI]
+import { AmplitudeAPI } from '@csod-oss/tracker-vendor-amplitude';
 
 // include tracker store enhancer before applying other functional middlewares
 const enhancer = compose(
+
   applyMiddleware(...otherMiddlewares),
+
   // create store enhancer with following arguments:
-  // trackerSettings, Vendor API, and function that resolves to Vendor API options
-  createTrackerStoreEnhancer(trackerSettings, AmplitudeAPI, getVendorAPIOptions),
+  // middlewareSettings, Vendor API, and function that resolves to Vendor API options
+  createTrackerStoreEnhancer(middlewareSettings, AmplitudeAPI, getVendorAPIOptions),
+
   DevTools.instrument()
 );
 
@@ -62,17 +70,15 @@ const enhancer = compose(
 export const store = createStore(rootReducer, {}, enhancer);
 ```
 
-### 4. Use builtin action creators to dispatch events
+### 4. Use provided action creators to create actions
 
-Now all that is left is to dispatch "tracking" actions. 
+Create tracking actions by providing a payload to the action creator. The payload consists of two properties `userData` (user properties) and `eventData` (event properties) of type {object}.
 
-If you are using react-redux, you might be familiar with [mapDispatchToProps](https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#mapdispatchtoprops-object--dispatch-ownprops--object) which is a nice helper to keep your code concise. There is also [bindActionCreators](https://github.com/reduxjs/redux/blob/master/docs/api/bindActionCreators.md) natively available in Redux.
-
-You'll typically use one of these methods to dispatch actions created by the action creators shown below.
+If userData or eventData contains a property with value of type function, the action will be resolved by invoking the function with current state (`store.getState()`) as argument.
 
 ```typescript
 // import function to retrieve action creators
-import getActionCreators from "@csod-oss/tracker";
+import { getActionCreators } from "@csod-oss/tracker";
 
 // get action creators by supplying a VendorKey
 // this will ensure all action creators use the supplied key as prefix
@@ -90,21 +96,29 @@ track({
 });
 ```
 
-Or you may also use values from app state (store) as shown below:
+Or you may use values from app state (store) as shown below:
 
 ```typescript
 
-// trackWithState action creater returns action of type [AnalyticsTrackActionThunkable]
+// trackWithState action creator returns action of type [AnalyticsTrackActionThunkable]
 trackWithState({
   userData: {
-    numberOfProductsViewed: state => `${state.user.numberOfProductsViewed}`
+    numberOfProductsViewed: (state) => `${state.user.numberOfProductsViewed}`
   },
   eventData: {
     eventName: 'CART_CHECKOUT',
-    itemIds: state => `${state.cart.addedIds}`
+    itemIds: (state) => `${state.cart.addedIds}`
   }
 })
 ```
+
+### 5. Dispatch actions
+
+Once the tracking actions are created, all that is left is to call `store.dispatch` on them.
+
+It is up to your app and your Redux setup on how you `dispatch` actions. React-redux is the de facto standard of wiring up your components to Redux store.
+
+> Use helpers [mapDispatchToProps](https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#mapdispatchtoprops-object--dispatch-ownprops--object) from react-redux or [bindActionCreators](https://github.com/reduxjs/redux/blob/master/docs/api/bindActionCreators.md) from redux to hookup the dispatch.
 
 ## Documentation
 - [Tracker Middleware API](https://github.com/gt3/tracker/wiki)
