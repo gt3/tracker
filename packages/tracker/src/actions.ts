@@ -12,6 +12,7 @@ import {
   EventDataThunkable
 } from './types';
 import { memo1 } from '@csod-oss/tracker-common/build/utils';
+import { resolveToTrackAction } from './action-resolvers';
 
 export default memo1(getActionCreators);
 
@@ -58,12 +59,12 @@ function getActionCreators(vendorKey: VendorKey) {
       type: ac.RESUME_ANALYTICS_TRACKING
     }),
 
-    internal: getInternalActionCreators(prefix)
+    internal: getInternalActionCreators(prefix, () => ac)
   };
   return ac;
 }
 
-function getInternalActionCreators(prefix: string) {
+function getInternalActionCreators(prefix: string, getActionCreators: () => ActionCreators) {
   const ac: InternalActionCreators = {
     // command action types
     DISPATCH_PENDING_ANALYTICS_ACTIONS: `${prefix} DISPATCH_PENDING_ACTIONS`,
@@ -113,7 +114,9 @@ function getInternalActionCreators(prefix: string) {
     bufferedActions: actions => ({
       type: ac.BUFFERED_ANALYTICS_ACTIONS,
       meta: actions
-    })
+    }),
+
+    resolveToTrackAction: resolveToTrackAction(getActionCreators)
   };
   return ac;
 }
@@ -141,6 +144,7 @@ export type InternalActionCreators = {
   dispatchPendingActions: () => AnalyticsAction;
   setPendingAction: (action: AnalyticsAction) => AnalyticsAction;
   bufferedActions: (action: AnalyticsAction[]) => AnalyticsAction;
+  resolveToTrackAction: (action: AnalyticsTrackActionThunkable, state: any) => AnalyticsTrackAction;
 };
 
 export type ActionCreators = {

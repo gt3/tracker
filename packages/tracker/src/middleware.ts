@@ -2,41 +2,8 @@ import { Client } from './client';
 import { VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import getActionCreators, { ActionCreators } from './actions';
 import { Reducer, AnyAction } from 'redux';
-import {
-  AnalyticsTrackAction,
-  AnalyticsTrackActionThunkable,
-  TrackActionPayload,
-  UserData,
-  EventData,
-  MiddlewareSettings
-} from './types';
-import { BufferedActionReturnTypes, DispatchBuffer } from './dispatch-buffer';
-
-const resolveWithState = (state: any, data: any) => {
-  let newData = data;
-  if (data) {
-    newData = Object.keys(data).reduce((acc: any, k) => {
-      const getData = data[k];
-      acc[k] = typeof data[k] === 'function' ? getData(state) : getData;
-      return acc;
-    }, {});
-  }
-  return newData;
-};
-
-function resolveToTrackAction(action: AnalyticsTrackActionThunkable, state: any, ac: ActionCreators): AnalyticsTrackAction {
-  const { track } = ac;
-  if (!action.payload) {
-    return track(action.payload);
-  }
-  const { userData, eventData, ...rest } = action.payload;
-  const newPayload: TrackActionPayload<UserData, EventData> = {
-    ...rest,
-    userData: resolveWithState(state, userData),
-    eventData: resolveWithState(state, eventData)
-  };
-  return track(newPayload);
-}
+import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, MiddlewareSettings } from './types';
+import { DispatchBuffer } from './dispatch-buffer';
 
 export type GetVendorAPIOptions<T> = () => Promise<T | null | void>;
 
@@ -61,7 +28,8 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
     dispatchPendingActions,
     DISPATCH_PENDING_ANALYTICS_ACTIONS,
     SET_PENDING_ANALYTICS_ACTION,
-    INIT_ANALYTICS_DONE
+    INIT_ANALYTICS_DONE,
+    resolveToTrackAction
   } = ac.internal;
   const _client = new Client(appSettings, API, ac);
   return (store: { dispatch: any; getState: any }) => {
@@ -87,7 +55,7 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
       } else if (action.type === TRACK_ANALYTICS) {
         bufferDispatch(_client.track(action as AnalyticsTrackAction));
       } else if (action.type === TRACK_ANALYTICS_WITH_STATE) {
-        const resolved = resolveToTrackAction(action as AnalyticsTrackActionThunkable, store.getState(), ac);
+        const resolved = resolveToTrackAction(action as AnalyticsTrackActionThunkable, store.getState());
         bufferDispatch(Promise.resolve(resolved));
       } else if (action.type === PAUSE_ANALYTICS_TRACKING) {
         _client.controlTracking(true);
