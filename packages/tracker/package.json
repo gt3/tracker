@@ -1,6 +1,6 @@
 {
   "name": "@csod-oss/tracker",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -10,7 +10,7 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
-    "@csod-oss/tracker-common": "^0.0.5"
+    "@csod-oss/tracker-common": "^0.0.6"
   },
   "scripts": {
     "format": "prettier --parser typescript --single-quote --print-width 130 --write \"{src,tests}/**/*.{ts,tsx}\"",
