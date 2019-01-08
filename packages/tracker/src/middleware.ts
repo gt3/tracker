@@ -10,7 +10,7 @@ import {
   EventData,
   MiddlewareSettings
 } from './types';
-import { flatten1 } from '@csod-oss/tracker-common/build/utils';
+import { BufferedActionReturnTypes, DispatchBuffer } from './dispatch-buffer';
 
 const resolveWithState = (state: any, data: any) => {
   let newData = data;
@@ -37,51 +37,6 @@ function resolveToTrackAction(action: AnalyticsTrackActionThunkable, state: any,
   };
   return track(newPayload);
 }
-
-function processBufferedActions(
-  store: { dispatch: any; getState: any },
-  next: any,
-  pactions: Promise<BufferedActionReturnTypes>[],
-  ac: ActionCreators
-) {
-  const { bufferedActions } = ac.internal;
-  if (pactions.length > 0) {
-    Promise.all(pactions)
-      .then(actions => flatten1(actions))
-      .then(actions => actions.filter(Boolean))
-      .then(actions => {
-        if (!actions || actions.length === 0) return;
-        actions.forEach((a: AnyAction) => store.dispatch(a));
-        if (actions.length == 1) {
-          next(actions[0]);
-        } else {
-          next(bufferedActions(actions));
-        }
-      });
-  }
-}
-
-type BufferedActionReturnTypes = AnyAction | AnyAction[] | null | void;
-
-type DispatchBuffer<T = BufferedActionReturnTypes> = {
-  getBufferedActions: () => Promise<T>[];
-  bufferDispatch: (paction: Promise<T>) => void;
-  reset: () => void;
-};
-
-const dispatchBuffer = () => {
-  let _pactions: Promise<BufferedActionReturnTypes>[] = [];
-  const dispatcher: DispatchBuffer = {
-    getBufferedActions: () => _pactions,
-    bufferDispatch: paction => {
-      _pactions.push(paction);
-    },
-    reset: () => {
-      _pactions = [];
-    }
-  };
-  return dispatcher;
-};
 
 export type GetVendorAPIOptions<T> = () => Promise<T | null | void>;
 
@@ -111,7 +66,7 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
   const _client = new Client(appSettings, API, ac);
   return (store: { dispatch: any; getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
-    const { getBufferedActions, bufferDispatch, reset } = dispatchBuffer();
+    const { bufferDispatch, processBufferedActions } = new DispatchBuffer(store, ac);
     return (next: any) => (action: AnyAction) => {
       if (action.type === LOAD_ANALYTICS) {
         bufferDispatch(_client.load());
@@ -145,9 +100,7 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
           return next(action);
         }
       }
-      let pactions = getBufferedActions();
-      reset();
-      processBufferedActions(store, next, pactions, ac);
+      processBufferedActions(next);
     };
   };
 }
