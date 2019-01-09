@@ -1,7 +1,7 @@
 import { Client } from './client';
 import { VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import getActionCreators from './actions';
-import { Reducer, AnyAction } from 'redux';
+import { AnyAction } from 'redux';
 import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, MiddlewareSettings } from './types';
 import { DispatchBuffer } from './dispatch-buffer';
 import { ActionCreators } from './types.actions';
@@ -15,7 +15,6 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
   ac: ActionCreators
 ) {
   const {
-    prefix,
     LOAD_ANALYTICS,
     INIT_ANALYTICS,
     init,
@@ -30,7 +29,6 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
     DISPATCH_PENDING_ANALYTICS_ACTIONS,
     SET_PENDING_ANALYTICS_ACTION,
     INIT_ANALYTICS_DONE,
-    bufferedActions,
     resolveToTrackAction
   } = ac.internal;
   const _client = new Client(appSettings, API, ac);
@@ -38,6 +36,8 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
     _client.scheduleLoadDispatch().then(store.dispatch);
     const { bufferActions, resolveBufferedActions } = new DispatchBuffer();
     return (next: any) => (action: AnyAction) => {
+      if (!action || !action.type) return next(action);
+
       if (action.type === LOAD_ANALYTICS) {
         bufferActions(_client.load());
       } else if (action.type === LOAD_ANALYTICS_DONE) {
@@ -75,17 +75,6 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
   };
 }
 
-function buferedActionsEnhanceReducer(reducer: Reducer, ac: ActionCreators) {
-  return (state: any, action: any) => {
-    if (action.type === ac.internal.BUFFERED_ANALYTICS_ACTIONS) {
-      state = action.meta.reduce(reducer, state);
-    } else {
-      state = reducer(state, action);
-    }
-    return state;
-  };
-}
-
 export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(
   appSettings: MiddlewareSettings,
   API: VendorAPIWrapper<T>,
@@ -94,7 +83,7 @@ export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(
   const ac = getActionCreators(API.vendorKey);
   const middleware = createTrackerMiddleware(appSettings, API, getAPIOptions, ac);
   return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
-    let store = createStore(buferedActionsEnhanceReducer(reducer, ac), initialState, ...args);
+    let store = createStore(reducer, initialState, ...args);
     let dispatch: any = (action: any) => void 0;
     const middlewareAPI = {
       getState: store.getState,

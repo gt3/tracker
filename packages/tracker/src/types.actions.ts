@@ -42,7 +42,7 @@ type InternalEventActionTypes = {
   INIT_ANALYTICS_ERR: string;
   TRACK_ANALYTICS_DONE: string;
   TRACK_ANALYTICS_ERR: string;
-  BUFFERED_ANALYTICS_ACTIONS: string;
+  // BUFFERED_ANALYTICS_ACTIONS: string;
 };
 
 type InternalDocumentActionTypes = {
@@ -59,6 +59,6 @@ export type InternalActionCreators = InternalActionTypes & {
   trackFail: (err?: any) => AnalyticsAction;
   dispatchPendingActions: () => AnalyticsAction;
   setPendingAction: (action: AnalyticsAction) => AnalyticsAction;
-  bufferedActions: (action: AnalyticsAction[]) => AnalyticsAction;
+  // bufferedActions: (action: AnalyticsAction[]) => AnalyticsAction;
   resolveToTrackAction: (action: AnalyticsTrackActionThunkable, state: any) => AnalyticsTrackAction;
 };

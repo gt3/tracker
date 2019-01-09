@@ -64,7 +64,7 @@ function getInternalActionCreators(prefix: string, getActionCreators: () => Acti
     INIT_ANALYTICS_ERR: `${prefix} INIT_ERR`,
     TRACK_ANALYTICS_DONE: `${prefix} TRACK_DONE`,
     TRACK_ANALYTICS_ERR: `${prefix} TRACK_ERR`,
-    BUFFERED_ANALYTICS_ACTIONS: `${prefix} BUFFERED_ACTIONS`,
+    // BUFFERED_ANALYTICS_ACTIONS: `${prefix} BUFFERED_ACTIONS`,
 
     // document action types
     SET_PENDING_ANALYTICS_ACTION: `${prefix} SET_PENDING_ACTION`,
@@ -100,10 +100,12 @@ function getInternalActionCreators(prefix: string, getActionCreators: () => Acti
       meta: action
     }),
 
+    /*
     bufferedActions: actions => ({
       type: ac.BUFFERED_ANALYTICS_ACTIONS,
       meta: actions
     }),
+    */
 
     resolveToTrackAction: resolveToTrackAction(getActionCreators)
   };

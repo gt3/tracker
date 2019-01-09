@@ -1,18 +1,18 @@
 import { AnyAction } from 'redux';
 import { flatten1 } from '@csod-oss/tracker-common/build/utils';
 
-export type BufferedActionReturnTypes = AnyAction | AnyAction[] | null | void;
+export type DispatchBufferActionType = AnyAction | AnyAction[] | null | void;
 
-export type DispatchBufferType<T = BufferedActionReturnTypes> = {
+export type DispatchBufferType<T = DispatchBufferActionType> = {
   bufferActions: (...pactions: Promise<T>[]) => number;
   reset: () => void;
   resolveBufferedActions: () => Promise<T[]>;
 };
 
 export class DispatchBuffer implements DispatchBufferType {
-  private _pactions: Promise<BufferedActionReturnTypes>[] = [];
+  private _pactions: Promise<DispatchBufferActionType>[] = [];
 
-  bufferActions = (...pactions: Promise<BufferedActionReturnTypes>[]) => this._pactions.push(...pactions);
+  bufferActions = (...pactions: Promise<DispatchBufferActionType>[]) => this._pactions.push(...pactions);
 
   reset = () => (this._pactions = []);
 
