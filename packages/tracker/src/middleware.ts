@@ -1,10 +1,12 @@
 import { Client } from './client';
 import { VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import getActionCreators from './actions';
-import { AnyAction } from 'redux';
+import { AnyAction, Middleware } from 'redux';
 import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, MiddlewareSettings } from './types';
 import { DispatchBuffer } from './dispatch-buffer';
 import { ActionCreators } from './types.actions';
+import { pipe } from '@csod-oss/tracker-common/build/utils';
+import { createFilterMiddleware } from './filter-middleware';
 
 export type GetVendorAPIOptions<T> = () => Promise<T | null | void>;
 
@@ -81,7 +83,10 @@ export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(
   getAPIOptions: GetVendorAPIOptions<T>
 ) {
   const ac = getActionCreators(API.vendorKey);
-  const middleware = createTrackerMiddleware(appSettings, API, getAPIOptions, ac);
+  const middlewaresL2R = [
+    createTrackerMiddleware(appSettings, API, getAPIOptions, ac),
+    createFilterMiddleware(appSettings, ac)
+  ].filter(Boolean) as Array<Middleware>;
   return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
     let store = createStore(reducer, initialState, ...args);
     let dispatch: any = (action: any) => void 0;
@@ -89,7 +94,8 @@ export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(
       getState: store.getState,
       dispatch: (action: any) => dispatch(action)
     };
-    dispatch = middleware(middlewareAPI)(store.dispatch);
+    const pipeline = middlewaresL2R.map(middleware => middleware(middlewareAPI));
+    dispatch = pipe(...pipeline)(store.dispatch);
     return { ...store, dispatch };
   };
 }
