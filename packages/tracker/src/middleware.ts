@@ -29,12 +29,13 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
     DISPATCH_PENDING_ANALYTICS_ACTIONS,
     SET_PENDING_ANALYTICS_ACTION,
     INIT_ANALYTICS_DONE,
+    bufferedActions,
     resolveToTrackAction
   } = ac.internal;
   const _client = new Client(appSettings, API, ac);
   return (store: { dispatch: any; getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
-    const { bufferActions, dispatchBufferedActions } = new DispatchBuffer(store, ac);
+    const { bufferActions, resolveBufferedActions } = new DispatchBuffer();
     return (next: any) => (action: AnyAction) => {
       if (action.type === LOAD_ANALYTICS) {
         bufferActions(_client.load());
@@ -61,14 +62,14 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
         _client.controlTracking(true);
       } else if (action.type === RESUME_ANALYTICS_TRACKING) {
         _client.controlTracking(false);
-      } else {
-        if (action.type && action.type.indexOf(prefix) === 0) {
-          return;
-        } else {
-          return next(action);
-        }
       }
-      dispatchBufferedActions(next);
+
+      resolveBufferedActions().then((actions: AnyAction[]) => {
+        if (!actions.some(action => action.type === SET_PENDING_ANALYTICS_ACTION)) {
+          next(action);
+        }
+        actions.forEach((a: AnyAction) => store.dispatch(a));
+      });
     };
   };
 }
