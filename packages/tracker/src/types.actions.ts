@@ -10,6 +10,8 @@ import {
 } from './types';
 import { VendorAPIOptions } from '@csod-oss/tracker-common';
 
+export type ActionTypeKeys = keyof ActionTypes & InternalActionTypes;
+
 type CommandActionTypes = {
   LOAD_ANALYTICS: string;
   INIT_ANALYTICS: string;
