@@ -64,6 +64,17 @@ export function injectScript(script: Script) {
 }
 
 /**
+ *
+ * @param fns functions to pipe (left -> right)
+ */
+export function pipe(...fns: Function[]) {
+  function invoke(val: any) {
+    return fns.reduce((acc, fn) => (fn ? fn.call(this, acc) : acc), val);
+  }
+  return invoke;
+}
+
+/**
  * Memoize function call for fn that accepts one string argument
  */
 export function memo1(fn: Function) {
