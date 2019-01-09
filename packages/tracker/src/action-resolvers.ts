@@ -1,5 +1,5 @@
 import { AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData, AnalyticsTrackAction } from './types';
-import { ActionCreators } from './actions';
+import { ActionCreators } from './types.actions';
 
 const resolveWithState = (state: any, data: any) => {
   let newData = data;

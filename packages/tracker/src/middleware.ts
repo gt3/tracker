@@ -1,9 +1,10 @@
 import { Client } from './client';
 import { VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
-import getActionCreators, { ActionCreators } from './actions';
+import getActionCreators from './actions';
 import { Reducer, AnyAction } from 'redux';
 import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, MiddlewareSettings } from './types';
 import { DispatchBuffer } from './dispatch-buffer';
+import { ActionCreators } from './types.actions';
 
 export type GetVendorAPIOptions<T> = () => Promise<T | null | void>;
 

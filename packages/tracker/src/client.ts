@@ -7,7 +7,7 @@ import {
   isLocalhostTrackingEnabled
 } from '@csod-oss/tracker-common/build/utils';
 import { VendorAPI, ScriptByEnvironment, VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
-import { ActionCreators } from './actions';
+import { ActionCreators } from './types.actions';
 import { AnalyticsAction, AnalyticsTrackAction, MiddlewareSettings } from './types';
 
 export class Client<T extends VendorAPIOptions> {

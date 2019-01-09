@@ -1,18 +1,7 @@
-import { VendorAPIOptions, VendorKey } from '@csod-oss/tracker-common';
-
-//types
-import {
-  AnalyticsAction,
-  AnalyticsTrackAction,
-  TrackActionPayload,
-  AnalyticsTrackActionThunkable,
-  UserData,
-  EventData,
-  UserDataThunkable,
-  EventDataThunkable
-} from './types';
+import { VendorKey } from '@csod-oss/tracker-common';
 import { memo1 } from '@csod-oss/tracker-common/build/utils';
 import { resolveToTrackAction } from './action-resolvers';
+import { ActionCreators, InternalActionCreators } from './types.actions';
 
 export default memo1(getActionCreators);
 
@@ -120,47 +109,3 @@ function getInternalActionCreators(prefix: string, getActionCreators: () => Acti
   };
   return ac;
 }
-
-export type InternalActionCreators = {
-  // command action types
-  DISPATCH_PENDING_ANALYTICS_ACTIONS: string;
-
-  // event action types
-  LOAD_ANALYTICS_DONE: string;
-  INIT_ANALYTICS_DONE: string;
-  INIT_ANALYTICS_ERR: string;
-  TRACK_ANALYTICS_DONE: string;
-  TRACK_ANALYTICS_ERR: string;
-  BUFFERED_ANALYTICS_ACTIONS: string;
-
-  // document action types
-  SET_PENDING_ANALYTICS_ACTION: string;
-
-  loadDone: () => AnalyticsAction;
-  initDone: () => AnalyticsAction;
-  initFail: (err?: any) => AnalyticsAction;
-  trackDone: () => AnalyticsAction;
-  trackFail: (err?: any) => AnalyticsAction;
-  dispatchPendingActions: () => AnalyticsAction;
-  setPendingAction: (action: AnalyticsAction) => AnalyticsAction;
-  bufferedActions: (action: AnalyticsAction[]) => AnalyticsAction;
-  resolveToTrackAction: (action: AnalyticsTrackActionThunkable, state: any) => AnalyticsTrackAction;
-};
-
-export type ActionCreators = {
-  prefix: string;
-  // command action types
-  LOAD_ANALYTICS: string;
-  INIT_ANALYTICS: string;
-  TRACK_ANALYTICS: string;
-  TRACK_ANALYTICS_WITH_STATE: string;
-  PAUSE_ANALYTICS_TRACKING: string;
-  RESUME_ANALYTICS_TRACKING: string;
-  load: () => AnalyticsAction;
-  init: <T extends VendorAPIOptions>(payload: T) => AnalyticsAction;
-  track: (payload: TrackActionPayload<UserData, EventData>) => AnalyticsTrackAction;
-  trackWithState: (payload: TrackActionPayload<UserDataThunkable, EventDataThunkable>) => AnalyticsTrackActionThunkable;
-  pauseTracking: () => AnalyticsAction;
-  resumeTracking: () => AnalyticsAction;
-  internal: InternalActionCreators;
-};

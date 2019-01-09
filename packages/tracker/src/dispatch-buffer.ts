@@ -1,5 +1,4 @@
 import { AnyAction } from 'redux';
-import { ActionCreators } from './actions';
 import { flatten1 } from '@csod-oss/tracker-common/build/utils';
 
 export type BufferedActionReturnTypes = AnyAction | AnyAction[] | null | void;
