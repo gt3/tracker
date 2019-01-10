@@ -116,7 +116,7 @@ trackWithState({
 
 Once the tracking actions are created, all that is left is to call `store.dispatch` on them.
 
-It is up to your app and your Redux setup on how you `dispatch` actions. React-redux is the de facto standard of wiring up your components to Redux store.
+It is up to your app and your Redux setup on how you `dispatch` actions. For React apps, React-redux is a standard way to wire up your components to Redux store.
 
 > Use helpers [mapDispatchToProps](https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#mapdispatchtoprops-object--dispatch-ownprops--object) from react-redux or [bindActionCreators](https://github.com/reduxjs/redux/blob/master/docs/api/bindActionCreators.md) from redux to hookup the dispatch.
 
@@ -125,3 +125,7 @@ It is up to your app and your Redux setup on how you `dispatch` actions. React-r
 - [Control Tracking Behavior](https://github.com/gt3/tracker/wiki)
 - [Actions Glossary](https://github.com/gt3/tracker/wiki)
 - [Vendor SDK Integration](https://github.com/gt3/tracker/wiki) (tbd)
+
+## License
+
+Released under the [MIT license](LICENSE.md).
