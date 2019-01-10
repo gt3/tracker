@@ -19,6 +19,7 @@ type CommandActionTypes = {
   TRACK_ANALYTICS_WITH_STATE: string;
   PAUSE_ANALYTICS_TRACKING: string;
   RESUME_ANALYTICS_TRACKING: string;
+  TERMINATE_ANALYTICS_USER_SESSION: string;
 };
 
 export type ActionTypes = CommandActionTypes;
@@ -31,6 +32,7 @@ export type ActionCreators = ActionTypes & {
   trackWithState: (payload: TrackActionPayload<UserDataThunkable, EventDataThunkable>) => AnalyticsTrackActionThunkable;
   pauseTracking: () => AnalyticsAction;
   resumeTracking: () => AnalyticsAction;
+  terminateSession: () => AnalyticsAction;
   internal: InternalActionCreators;
 };
 

@@ -23,7 +23,8 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
     TRACK_ANALYTICS,
     TRACK_ANALYTICS_WITH_STATE,
     PAUSE_ANALYTICS_TRACKING,
-    RESUME_ANALYTICS_TRACKING
+    RESUME_ANALYTICS_TRACKING,
+    TERMINATE_ANALYTICS_USER_SESSION
   } = ac;
   const {
     LOAD_ANALYTICS_DONE,
@@ -65,6 +66,8 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
         _client.controlTracking(true);
       } else if (action.type === RESUME_ANALYTICS_TRACKING) {
         _client.controlTracking(false);
+      } else if (action.type === TERMINATE_ANALYTICS_USER_SESSION) {
+        _client.terminateSession();
       }
 
       resolveBufferedActions().then((actions: AnyAction[]) => {

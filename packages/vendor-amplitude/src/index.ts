@@ -67,14 +67,25 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
     return new Promise<void>((resolve, reject) => {
       if (!instance) reject();
       if (userData && Object.keys(userData).length > 0) {
-        instance.setUserProperties(userData);
+        const { userId, ...userProps } = userData;
+        if (typeof userId !== 'undefined') {
+          instance.setUserId(userId);
+        }
+        if (Object.keys(userProps).length > 0) {
+          instance.setUserProperties(userProps);
+        }
       }
       if (eventData) {
         const { eventName, ...rest } = eventData;
         instance.logEvent(eventName, rest);
       }
-      resolve();
+      setTimeout(() => resolve(), 10);
     });
+  };
+
+  getDeviceId = () => {
+    const instance = this.getInstance();
+    return instance && instance.options.deviceId;
   };
 
   getSessionId = () => {
@@ -91,5 +102,15 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
     const instance = this.getInstance();
     if (!instance) return;
     instance.setOptOut(value);
+  };
+
+  terminateSession = () => {
+    const instance = this.getInstance();
+    if (!instance) return;
+    // @ts-ignore
+    instance.setUserId(null);
+    // @ts-ignore
+    if (instance.resetSessionId !== undefined) instance.resetSessionId();
+    instance.regenerateDeviceId();
   };
 }

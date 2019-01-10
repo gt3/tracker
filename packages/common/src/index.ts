@@ -22,8 +22,10 @@ export type VendorAPI<T extends VendorAPIOptions, V extends EnvType = Env> = {
   init: (options: T) => Promise<void>;
   track: (userData: any, eventData: any) => Promise<void>;
   getSessionId: () => undefined | number | string;
+  getDeviceId: () => undefined | number | string;
   clearUserProperties: () => void;
   controlTracking: (value: boolean) => void;
+  terminateSession: () => void;
 };
 
 export interface VendorAPIWrapper<T extends VendorAPIOptions, V extends EnvType = Env> {

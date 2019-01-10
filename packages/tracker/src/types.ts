@@ -17,7 +17,9 @@ export type EventDataThunkable = {
   [key: string]: Serializable | ValueThunk<Serializable>;
 };
 
-export type UserData = SerializeableRecord<SerializeablePrimitives>;
+export type UserData = SerializeableRecord<SerializeablePrimitives> & {
+  userId?: string | null;
+};
 
 export type UserDataThunkable = {
   [key: string]: Serializable | ValueThunk<Serializable>;
