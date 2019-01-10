@@ -1,6 +1,7 @@
 import { Action } from 'redux';
 import { SerializeableRecord, SerializeablePrimitives, Serializable, ValueThunk } from './types.generic';
 import { EnvType, Env } from '@csod-oss/tracker-common';
+import { ActionTypeKeys } from './types.actions';
 
 export type AnalyticsAction = Action & {
   payload?: any;
@@ -38,4 +39,5 @@ export type AnalyticsTrackActionThunkable = Action & {
 export type MiddlewareSettings<V extends EnvType = Env> = {
   env: V;
   preventAutoLoadInit?: boolean;
+  relayActions?: boolean | Partial<Record<ActionTypeKeys, boolean>>;
 };

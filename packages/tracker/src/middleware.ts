@@ -1,9 +1,12 @@
 import { Client } from './client';
 import { VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
-import getActionCreators, { ActionCreators } from './actions';
-import { Reducer, AnyAction } from 'redux';
+import getActionCreators from './actions';
+import { AnyAction, Middleware } from 'redux';
 import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, MiddlewareSettings } from './types';
 import { DispatchBuffer } from './dispatch-buffer';
+import { ActionCreators } from './types.actions';
+import { pipe } from '@csod-oss/tracker-common/build/utils';
+import { createFilterMiddleware } from './filter-middleware';
 
 export type GetVendorAPIOptions<T> = () => Promise<T | null | void>;
 
@@ -14,7 +17,6 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
   ac: ActionCreators
 ) {
   const {
-    prefix,
     LOAD_ANALYTICS,
     INIT_ANALYTICS,
     init,
@@ -34,8 +36,10 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
   const _client = new Client(appSettings, API, ac);
   return (store: { dispatch: any; getState: any }) => {
     _client.scheduleLoadDispatch().then(store.dispatch);
-    const { bufferActions, dispatchBufferedActions } = new DispatchBuffer(store, ac);
+    const { bufferActions, resolveBufferedActions } = new DispatchBuffer();
     return (next: any) => (action: AnyAction) => {
+      if (!action || !action.type) return next(action);
+
       if (action.type === LOAD_ANALYTICS) {
         bufferActions(_client.load());
       } else if (action.type === LOAD_ANALYTICS_DONE) {
@@ -61,26 +65,15 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
         _client.controlTracking(true);
       } else if (action.type === RESUME_ANALYTICS_TRACKING) {
         _client.controlTracking(false);
-      } else {
-        if (action.type && action.type.indexOf(prefix) === 0) {
-          return;
-        } else {
-          return next(action);
-        }
       }
-      dispatchBufferedActions(next);
-    };
-  };
-}
 
-function buferedActionsEnhanceReducer(reducer: Reducer, ac: ActionCreators) {
-  return (state: any, action: any) => {
-    if (action.type === ac.internal.BUFFERED_ANALYTICS_ACTIONS) {
-      state = action.meta.reduce(reducer, state);
-    } else {
-      state = reducer(state, action);
-    }
-    return state;
+      resolveBufferedActions().then((actions: AnyAction[]) => {
+        if (!actions.some(action => action.type === SET_PENDING_ANALYTICS_ACTION)) {
+          next(action);
+        }
+        actions.forEach((a: AnyAction) => store.dispatch(a));
+      });
+    };
   };
 }
 
@@ -90,15 +83,19 @@ export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(
   getAPIOptions: GetVendorAPIOptions<T>
 ) {
   const ac = getActionCreators(API.vendorKey);
-  const middleware = createTrackerMiddleware(appSettings, API, getAPIOptions, ac);
+  const middlewares = [
+    createFilterMiddleware(appSettings, ac),
+    createTrackerMiddleware(appSettings, API, getAPIOptions, ac)
+  ].filter(Boolean) as Array<Middleware>;
   return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
-    let store = createStore(buferedActionsEnhanceReducer(reducer, ac), initialState, ...args);
+    let store = createStore(reducer, initialState, ...args);
     let dispatch: any = (action: any) => void 0;
     const middlewareAPI = {
       getState: store.getState,
       dispatch: (action: any) => dispatch(action)
     };
-    dispatch = middleware(middlewareAPI)(store.dispatch);
+    const pipeline = middlewares.map(middleware => middleware(middlewareAPI));
+    dispatch = pipe(...pipeline)(store.dispatch);
     return { ...store, dispatch };
   };
 }
