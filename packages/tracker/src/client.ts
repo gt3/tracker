@@ -35,6 +35,10 @@ export class Client<T extends VendorAPIOptions> {
     return typeof this._times.loadEnd !== 'undefined';
   }
 
+  get initCompleted() {
+    return typeof this._times.initEnd !== 'undefined';
+  }
+
   scheduleLoadDispatch() {
     const { preventAutoLoadInit } = this._appSettings;
     return new Promise((resolve, reject) => {
@@ -78,7 +82,7 @@ export class Client<T extends VendorAPIOptions> {
   }
 
   dispatchPendingActions() {
-    if (!this.loadCompleted) return Promise.resolve(null);
+    if (!this.initCompleted) return Promise.resolve(null);
     const actions: AnalyticsAction[] = [];
     this._pendingActions.forEach(action => actions.push(action));
     this._pendingActions.clear();
@@ -87,8 +91,8 @@ export class Client<T extends VendorAPIOptions> {
 
   track(action: AnalyticsTrackAction) {
     const { setPendingAction, trackDone, trackFail } = this._ac.internal;
-    // check if not loaded, add action to processing queue .. needed?
-    if (!this.loadCompleted) return Promise.resolve(setPendingAction(action));
+    // check if not initialized, add action to processing queue .. needed?
+    if (!this.initCompleted) return Promise.resolve(setPendingAction(action));
     return this._vendorAPI
       .track(action.payload.userData, action.payload.eventData)
       .then(trackDone, () => trackFail(new Error('Could not send track action.')));
