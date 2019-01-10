@@ -77,12 +77,12 @@ export function pipe(...fns: Function[]) {
 /**
  * Memoize function call for fn that accepts one string argument
  */
-export function memo1(fn: Function) {
+export function memo1(fn: Function, checkResult?: (val: any) => boolean) {
   const cache = new Map();
   function wrapper(arg: string) {
     if (cache.has(arg)) return cache.get(arg);
     const res = fn.call(this, arg);
-    cache.set(arg, res);
+    if (!checkResult || checkResult(res)) cache.set(arg, res);
     return res;
   }
   return wrapper;
