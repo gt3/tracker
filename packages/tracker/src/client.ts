@@ -55,12 +55,6 @@ export class Client<T extends VendorAPIOptions> {
 
   loadDone() {
     this._times.loadEnd = new Date().getTime();
-    let action = null;
-    const { pauseTracking, resumeTracking } = this._ac;
-    if (isLocalhost) {
-      action = !isLocalhostTrackingEnabled() ? pauseTracking() : resumeTracking();
-    }
-    return Promise.resolve(action);
   }
 
   init(action: AnalyticsAction) {
@@ -75,6 +69,8 @@ export class Client<T extends VendorAPIOptions> {
 
   initDone() {
     this._times.initEnd = new Date().getTime();
+    const { pauseTracking, resumeTracking } = this._ac;
+    return Promise.resolve(isLocalhost && (!isLocalhostTrackingEnabled() ? pauseTracking() : resumeTracking()));
   }
 
   savePendingAction(action: AnalyticsAction) {
