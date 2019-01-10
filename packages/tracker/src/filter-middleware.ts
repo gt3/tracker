@@ -6,6 +6,7 @@ export const relayActionsDefault: Partial<Record<ActionTypeKeys, boolean>> = {
   TRACK_ANALYTICS: true,
   PAUSE_ANALYTICS_TRACKING: true,
   RESUME_ANALYTICS_TRACKING: true,
+  TERMINATE_ANALYTICS_USER_SESSION: true,
   LOAD_ANALYTICS_DONE: true,
   INIT_ANALYTICS_DONE: true,
   INIT_ANALYTICS_ERR: true,

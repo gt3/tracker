@@ -101,6 +101,10 @@ export class Client<T extends VendorAPIOptions> {
   controlTracking(value: boolean) {
     this._vendorAPI.controlTracking(value);
   }
+
+  terminateSession() {
+    this._vendorAPI.terminateSession();
+  }
 }
 
 type Times = {

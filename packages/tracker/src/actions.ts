@@ -18,6 +18,7 @@ function getActionCreators(vendorKey: VendorKey) {
     TRACK_ANALYTICS_WITH_STATE: `${prefix} TRACK_WITH_STATE`,
     PAUSE_ANALYTICS_TRACKING: `${prefix} PAUSE_TRACKING`,
     RESUME_ANALYTICS_TRACKING: `${prefix} RESUME_TRACKING`,
+    TERMINATE_ANALYTICS_USER_SESSION: `${prefix} TERMINATE_USER_SESSION`,
 
     load: () => ({
       type: ac.LOAD_ANALYTICS
@@ -46,6 +47,10 @@ function getActionCreators(vendorKey: VendorKey) {
 
     resumeTracking: () => ({
       type: ac.RESUME_ANALYTICS_TRACKING
+    }),
+
+    terminateSession: () => ({
+      type: ac.TERMINATE_ANALYTICS_USER_SESSION
     }),
 
     internal: getInternalActionCreators(prefix, () => ac)
