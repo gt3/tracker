@@ -83,9 +83,9 @@ export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(
   getAPIOptions: GetVendorAPIOptions<T>
 ) {
   const ac = getActionCreators(API.vendorKey);
-  const middlewaresL2R = [
-    createTrackerMiddleware(appSettings, API, getAPIOptions, ac),
-    createFilterMiddleware(appSettings, ac)
+  const middlewares = [
+    createFilterMiddleware(appSettings, ac),
+    createTrackerMiddleware(appSettings, API, getAPIOptions, ac)
   ].filter(Boolean) as Array<Middleware>;
   return (createStore: any) => (reducer: any, initialState: any, ...args: any[]) => {
     let store = createStore(reducer, initialState, ...args);
@@ -94,7 +94,7 @@ export function createTrackerStoreEnhancer<T extends VendorAPIOptions>(
       getState: store.getState,
       dispatch: (action: any) => dispatch(action)
     };
-    const pipeline = middlewaresL2R.map(middleware => middleware(middlewareAPI));
+    const pipeline = middlewares.map(middleware => middleware(middlewareAPI));
     dispatch = pipe(...pipeline)(store.dispatch);
     return { ...store, dispatch };
   };
