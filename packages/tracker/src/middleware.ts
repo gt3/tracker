@@ -43,15 +43,15 @@ function createTrackerMiddleware<T extends VendorAPIOptions>(
       if (action.type === LOAD_ANALYTICS) {
         bufferActions(_client.load());
       } else if (action.type === LOAD_ANALYTICS_DONE) {
-        bufferActions(_client.loadDone());
+        _client.loadDone();
         const initDispatchPromise = getAPIOptions().then(apiOptions => {
-          return apiOptions && [init(apiOptions), dispatchPendingActions()];
+          return apiOptions && init(apiOptions);
         }, () => null);
         bufferActions(initDispatchPromise);
       } else if (action.type === INIT_ANALYTICS) {
         bufferActions(_client.init(action));
       } else if (action.type === INIT_ANALYTICS_DONE) {
-        _client.initDone();
+        bufferActions(_client.initDone(), Promise.resolve(dispatchPendingActions()));
       } else if (action.type === DISPATCH_PENDING_ANALYTICS_ACTIONS) {
         bufferActions(_client.dispatchPendingActions());
       } else if (action.type === SET_PENDING_ANALYTICS_ACTION) {
