@@ -1,9 +1,11 @@
 {
   "name": "@csod-oss/tracker-vendor-amplitude",
   "version": "0.2.0",
-  "description": "",
-  "author": "",
-  "license": "ISC",
+  "description": "Integration with Amplitude SDK for product analytics tracker: @csod-oss/tracker",
+  "author": "Ankit Patel <gt3.someday@gmail.com> (https://github.com/gt3)",
+  "license": "MIT",
+  "repository": "github:gt3/tracker",
+  "bugs": "https://github.com/gt3/tracker/issues",
   "main": "./build/index.js",
   "devDependencies": {
     "@csod-oss/tracker-common": "^0.2.0",
@@ -21,5 +23,11 @@
   "publishConfig": {
     "access": "public",
     "registry": "http://registry.npmjs.org"
-  }
+  },
+  "keywords": [
+    "Amplitude",
+    "amplitude-js",
+    "product analytics",
+    "web analytics"
+  ]
 }

@@ -1,9 +1,11 @@
 {
   "name": "@csod-oss/tracker",
   "version": "0.2.0",
-  "description": "",
-  "author": "",
-  "license": "ISC",
+  "description": "Middleware library to integrate Redux apps with web analytics to measure and improve user experience.",
+  "author": "Ankit Patel <gt3.someday@gmail.com> (https://github.com/gt3)",
+  "license": "MIT",
+  "repository": "github:gt3/tracker",
+  "bugs": "https://github.com/gt3/tracker/issues",
   "main": "./build/index.js",
   "devDependencies": {
     "prettier": "1.12.1",
@@ -22,5 +24,13 @@
   "publishConfig": {
     "access": "public",
     "registry": "http://registry.npmjs.org"
-  }
+  },
+  "keywords": [
+    "analytics",
+    "react",
+    "redux",
+    "redux middleware",
+    "product analytics",
+    "web analytics"
+  ]
 }
