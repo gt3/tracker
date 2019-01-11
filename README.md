@@ -43,7 +43,7 @@ const getVendorAPIOptions = () => Promise.resolve({ apiKey: 'vendor-api-key' });
 
 ```
 
-### 3. Hookup middleware to Redux store
+### 3. Attach the middleware to Redux store
 
 This part involves setting up the tracker middleware to prepare your app to send tracking events. To add the middleware, you'll use the `createTrackerStoreEnhancer` factory function and pass the result (store enhancer) to Redux's `createStore` function.
 
