@@ -9,7 +9,7 @@
   "main": "./build/index.js",
   "devDependencies": {
     "prettier": "1.12.1",
-    "typescript": "^3.2.2"
+    "typescript": "2.9.2"
   },
   "dependencies": {
     "@csod-oss/tracker-common": "^0.2.1"

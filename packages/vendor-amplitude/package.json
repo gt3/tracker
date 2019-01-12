@@ -11,7 +11,7 @@
     "@csod-oss/tracker-common": "^0.2.1",
     "@types/amplitude-js": "^4.4.0",
     "prettier": "1.12.1",
-    "typescript": "^3.2.2"
+    "typescript": "2.9.2"
   },
   "scripts": {
     "format": "prettier --parser typescript --single-quote --print-width 130 --write \"{src,tests}/**/*.{ts,tsx}\"",
