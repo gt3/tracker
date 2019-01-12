@@ -1,5 +1,5 @@
-import { AnalyticsTrackActionThunkable, TrackActionPayload, UserData, EventData, AnalyticsTrackAction } from './types';
-import { ActionCreators } from './types.actions';
+import { UserData, EventData } from '@csod-oss/tracker-common';
+import { ActionCreators, AnalyticsTrackActionThunkable, TrackActionPayload, AnalyticsTrackAction } from './types.actions';
 
 const resolveWithState = (state: any, data: any) => {
   let newData = data;

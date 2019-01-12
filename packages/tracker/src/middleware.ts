@@ -2,10 +2,10 @@ import { Client } from './client';
 import { VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import getActionCreators from './actions';
 import { AnyAction, Middleware } from 'redux';
-import { AnalyticsTrackAction, AnalyticsTrackActionThunkable, MiddlewareSettings } from './types';
+import { MiddlewareSettings } from './types.middleware';
 import { DispatchBuffer } from './dispatch-buffer';
-import { ActionCreators } from './types.actions';
-import { pipe } from '@csod-oss/tracker-common/build/utils';
+import { ActionCreators, AnalyticsTrackAction, AnalyticsTrackActionThunkable } from './types.actions';
+import { pipe } from '@csod-oss/tracker-common';
 import { createFilterMiddleware } from './filter-middleware';
 
 export type GetVendorAPIOptions<T> = () => Promise<T | null | void>;

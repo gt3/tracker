@@ -1,4 +1,4 @@
-import { Env, VendorAPI, ScriptByEnvironment, VendorKey } from '@csod-oss/tracker-common';
+import { Env, VendorAPI, ScriptByEnvironment, VendorKey, UserData, EventData } from '@csod-oss/tracker-common';
 import { getInstance } from './instance';
 import { AmplitudeAPIOptions, mergeDefaults } from './options';
 export { AmplitudeAPIOptions } from './options';
@@ -9,7 +9,9 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
   static scripts: ScriptByEnvironment = {
     development: [
       {
-        src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2.js'
+        src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2.js',
+        integrity: 'sha384-Xmbx9VCQa8/XowA3i/411PigQ4k/u4J9zUnYwhVw4g6thW/j/q/LYE0GQNBBRZw7',
+        crossorigin: 'anonymous'
       }
     ],
     production: [
@@ -62,13 +64,14 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
     });
   };
 
-  track = (userData: any, eventData: any) => {
+  track = (userData?: UserData, eventData?: EventData) => {
     const instance = this.getInstance();
     return new Promise<void>((resolve, reject) => {
       if (!instance) reject();
       if (userData && Object.keys(userData).length > 0) {
         const { userId, ...userProps } = userData;
         if (typeof userId !== 'undefined') {
+          // @ts-ignore
           instance.setUserId(userId);
         }
         if (Object.keys(userProps).length > 0) {
