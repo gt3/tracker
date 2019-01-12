@@ -1,3 +1,5 @@
+import { UserData, EventData } from './types.data';
+
 export type EnvType = string;
 export type Env = EnvType & 'development' | 'production';
 
@@ -20,7 +22,7 @@ export type VendorAPI<T extends VendorAPIOptions, V extends EnvType = Env> = {
   getInstance: () => any;
   getScript: () => Script[];
   init: (options: T) => Promise<void>;
-  track: (userData: any, eventData: any) => Promise<void>;
+  track: (userData?: UserData, eventData?: EventData) => Promise<void>;
   getSessionId: () => undefined | number | string;
   getDeviceId: () => undefined | number | string;
   clearUserProperties: () => void;
