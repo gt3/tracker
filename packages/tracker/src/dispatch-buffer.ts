@@ -1,5 +1,5 @@
 import { AnyAction } from 'redux';
-import { flatten1 } from '@csod-oss/tracker-common/build/utils';
+import { flatten1 } from '@csod-oss/tracker-common';
 
 export type DispatchBufferActionType = AnyAction | AnyAction[] | null | void | boolean;
 

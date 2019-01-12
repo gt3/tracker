@@ -5,10 +5,10 @@ import {
   scriptExists,
   isLocalhost,
   isLocalhostTrackingEnabled
-} from '@csod-oss/tracker-common/build/utils';
+} from '@csod-oss/tracker-common';
 import { VendorAPI, ScriptByEnvironment, VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
-import { ActionCreators } from './types.actions';
-import { AnalyticsAction, AnalyticsTrackAction, MiddlewareSettings } from './types';
+import { ActionCreators, AnalyticsAction, AnalyticsTrackAction } from './types.actions';
+import { MiddlewareSettings } from './types.middleware';
 
 export class Client<T extends VendorAPIOptions> {
   private _times: Partial<Times> = {};

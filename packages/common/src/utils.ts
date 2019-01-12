@@ -1,4 +1,4 @@
-import { Script, ScriptByEnvironment, EnvType, Env } from './index';
+import { Script, ScriptByEnvironment } from './types.api';
 
 let _isDomReady = false,
   loadedScripts = new Set();

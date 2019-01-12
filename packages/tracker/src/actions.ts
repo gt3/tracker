@@ -1,5 +1,5 @@
 import { VendorKey } from '@csod-oss/tracker-common';
-import { memo1 } from '@csod-oss/tracker-common/build/utils';
+import { memo1 } from '@csod-oss/tracker-common';
 import { resolveToTrackAction } from './action-resolvers';
 import { ActionCreators, InternalActionCreators } from './types.actions';
 

@@ -1,4 +1,4 @@
-import { MiddlewareSettings } from './types';
+import { MiddlewareSettings } from './types.middleware';
 import { AnyAction } from 'redux';
 import { ActionTypeKeys, ActionCreators } from './types.actions';
 
