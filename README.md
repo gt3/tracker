@@ -12,6 +12,8 @@ Use this library to integrate analytics vendor SDKs with your JavaScript app.
 
 ## Quick start
 
+While this library does not have a dependency on Redux, it aims to extend the capabilities of Redux for your app, to serve the intended use case.
+
 If you haven't used [Redux](https://github.com/reduxjs/redux), you may want to read this [5-minute overview](https://medium.com/@nicotsou/tltr-redux-e4fc30f87e4a) first to understand the problem it solves and its core components.
 
 ### 1. Install dependencies
