@@ -1,4 +1,3 @@
-import { Action } from 'redux';
 import { UserData, EventData, UserDataThunkable, EventDataThunkable } from '@csod-oss/tracker-common';
 import { VendorAPIOptions } from '@csod-oss/tracker-common';
 
@@ -57,6 +56,10 @@ export type InternalActionCreators = InternalActionTypes & {
   setPendingAction: (action: AnalyticsAction) => AnalyticsAction;
   // bufferedActions: (action: AnalyticsAction[]) => AnalyticsAction;
   resolveToTrackAction: (action: AnalyticsTrackActionThunkable, state: any) => AnalyticsTrackAction;
+};
+
+type Action = {
+  type: string;
 };
 
 export type AnalyticsAction = Action & {
