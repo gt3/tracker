@@ -12,6 +12,8 @@ Use this library to integrate analytics vendor SDKs with your JavaScript app.
 
 ## Quick start
 
+If you haven't used [Redux](https://github.com/reduxjs/redux), you may want to read this [5-minute overview](https://medium.com/@nicotsou/tltr-redux-e4fc30f87e4a) first to understand what problem it solves and its core components.
+
 ### 1. Install dependencies
 
 You'll need two or more packages depending on the vendor(s) you want to integrate with. To use Amplitude as an example, run the following commands in your app:
@@ -114,11 +116,9 @@ trackWithState({
 
 ### 5. Dispatch actions
 
-Once the tracking actions are created, all that is left is to call `store.dispatch` on them.
+Once the tracking actions are created, all that is left is to call `store.dispatch` on them. It is up to your app and your Redux setup on how `dispatch` is invoked. 
 
-It is up to your app and your Redux setup on how you `dispatch` actions. For React apps, React-redux is a standard way to wire up your components to Redux store.
-
-> Use helpers [mapDispatchToProps](https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#mapdispatchtoprops-object--dispatch-ownprops--object) from react-redux or [bindActionCreators](https://github.com/reduxjs/redux/blob/master/docs/api/bindActionCreators.md) from redux to hookup the dispatch.
+For React apps, [react-redux](https://github.com/reduxjs/react-redux) is a standard way to wire up container components to Redux store. Use helpers [mapDispatchToProps](https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#mapdispatchtoprops-object--dispatch-ownprops--object) from react-redux or [bindActionCreators](https://github.com/reduxjs/redux/blob/master/docs/api/bindActionCreators.md) from redux to hook up the dispatch.
 
 ## Documentation
 - [Tracker Middleware API](https://github.com/gt3/tracker/wiki)
