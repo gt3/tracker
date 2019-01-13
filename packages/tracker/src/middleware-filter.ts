@@ -1,6 +1,5 @@
 import { MiddlewareSettings } from './types.middleware';
-import { AnyAction } from 'redux';
-import { ActionTypeKeys, ActionCreators } from './types.actions';
+import { ActionTypeKeys, ActionCreators, AnalyticsAction } from './types.actions';
 
 export const relayActionsDefault: Partial<Record<ActionTypeKeys, boolean>> = {
   TRACK_ANALYTICS: true,
@@ -29,7 +28,7 @@ export function createFilterMiddleware(appSettings: MiddlewareSettings, ac: Acti
   const checks = transformActionKeys(ac, actionKeyChecks);
   const relayFn = relay.bind(null, prefix, checks);
   return (store: { dispatch: any; getState: any }) => {
-    return (next: any) => (action: AnyAction) => {
+    return (next: any) => (action: AnalyticsAction) => {
       return relayFn(action) && next(action);
     };
   };
@@ -49,7 +48,7 @@ function transformActionKeys(ac: ActionCreators, checks: Partial<Record<ActionTy
   return res;
 }
 
-function relay(prefix: string, checks: Record<string, boolean>, action: AnyAction) {
+function relay(prefix: string, checks: Record<string, boolean>, action: AnalyticsAction) {
   if (!action || !action.type || action.type.indexOf(prefix) !== 0) return true;
   return !!checks[action.type];
 }

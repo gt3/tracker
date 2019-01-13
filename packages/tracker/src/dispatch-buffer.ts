@@ -1,7 +1,7 @@
-import { AnyAction } from 'redux';
 import { flatten1 } from '@csod-oss/tracker-common';
+import { AnalyticsAction } from './types.actions';
 
-export type DispatchBufferActionType = AnyAction | AnyAction[] | null | void | boolean;
+export type DispatchBufferActionType = AnalyticsAction | AnalyticsAction[] | null | void | boolean;
 
 export type DispatchBufferType<T = DispatchBufferActionType> = {
   bufferActions: (...pactions: Promise<T>[]) => number;
