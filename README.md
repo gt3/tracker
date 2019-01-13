@@ -12,7 +12,7 @@ Use this library to integrate analytics vendor SDKs with your JavaScript app.
 
 ## Quick start
 
-If you haven't used [Redux](https://github.com/reduxjs/redux), you may want to read this [5-minute overview](https://medium.com/@nicotsou/tltr-redux-e4fc30f87e4a) first to understand what problem it solves and its core components.
+If you haven't used [Redux](https://github.com/reduxjs/redux), you may want to read this [5-minute overview](https://medium.com/@nicotsou/tltr-redux-e4fc30f87e4a) first to understand the problem it solves and its core components.
 
 ### 1. Install dependencies
 
