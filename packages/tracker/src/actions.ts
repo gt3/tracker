@@ -3,8 +3,6 @@ import { memo1 } from '@csod-oss/tracker-common';
 import { resolveToTrackAction } from './action-resolvers';
 import { ActionCreators, InternalActionCreators } from './types.actions';
 
-export default memo1(getActionCreators);
-
 function getActionCreators(vendorKey: VendorKey) {
   const prefix = `[${vendorKey}]`;
 
@@ -116,3 +114,6 @@ function getInternalActionCreators(prefix: string, getActionCreators: () => Acti
   };
   return ac;
 }
+
+const memod = memo1(getActionCreators);
+export { memod as getActionCreators };

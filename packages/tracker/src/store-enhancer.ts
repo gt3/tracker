@@ -1,6 +1,6 @@
 import { VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import { MiddlewareSettings, GetVendorAPIOptions } from './types.middleware';
-import getActionCreators from './actions';
+import { getActionCreators } from './actions';
 import { createFilterMiddleware } from './middleware-filter';
 import { createTrackerMiddleware } from './middleware-tracker';
 import { pipe } from '@csod-oss/tracker-common';
