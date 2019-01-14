@@ -115,5 +115,5 @@ function getInternalActionCreators(prefix: string, getActionCreators: () => Acti
   return ac;
 }
 
-const memod = memo1(getActionCreators);
+const memod: (vendorKey: VendorKey) => ActionCreators = memo1(getActionCreators);
 export { memod as getActionCreators };
