@@ -123,10 +123,8 @@ Once the tracking actions are created, all that is left is to call `store.dispat
 For React apps, [react-redux](https://github.com/reduxjs/react-redux) is a standard way to wire up container components to Redux store. Use helpers [mapDispatchToProps](https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#mapdispatchtoprops-object--dispatch-ownprops--object) from react-redux or [bindActionCreators](https://github.com/reduxjs/redux/blob/master/docs/api/bindActionCreators.md) from redux to hook up the dispatch.
 
 ## Documentation
-- [Tracker Middleware API](https://github.com/gt3/tracker/wiki)
 - [Control Tracking Behavior](https://github.com/gt3/tracker/wiki)
 - [Actions Glossary](https://github.com/gt3/tracker/wiki)
-- [Vendor SDK Integration](https://github.com/gt3/tracker/wiki) (tbd)
 
 ## License
 
