@@ -68,7 +68,7 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
       if (!instance) reject();
       if (userData && Object.keys(userData).length > 0) {
         const { userId, ...userProps } = userData;
-        if (typeof userId !== 'undefined') {
+        if (typeof userId !== 'undefined' && userId !== '') {
           // @ts-ignore
           instance.setUserId(userId);
         }
