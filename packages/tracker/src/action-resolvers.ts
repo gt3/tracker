@@ -4,11 +4,15 @@ import { ActionCreators, AnalyticsTrackActionThunkable, TrackActionPayload, Anal
 const resolveWithState = (state: any, data: any) => {
   let newData = data;
   if (data) {
-    newData = Object.keys(data).reduce((acc: any, k) => {
-      const getData = data[k];
-      acc[k] = typeof data[k] === 'function' ? getData(state) : getData;
-      return acc;
-    }, {});
+    if (typeof data === 'function') {
+      newData = data(state);
+    } else {
+      newData = Object.keys(data).reduce((acc: any, k) => {
+        const getData = data[k];
+        acc[k] = typeof data[k] === 'function' ? getData(state) : getData;
+        return acc;
+      }, {});
+    }
   }
   return newData;
 };
