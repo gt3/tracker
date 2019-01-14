@@ -22,14 +22,20 @@ export const resolveToTrackAction = (getActionCreators: () => ActionCreators) =>
   state: any
 ): AnalyticsTrackAction => {
   const { track } = getActionCreators();
-  if (!action.payload) {
-    return track(action.payload);
+  const { payload } = action;
+  let newPayload: TrackActionPayload<UserData, EventData>;
+  if (!payload) {
+    return track(payload);
   }
-  const { userData, eventData, ...rest } = action.payload;
-  const newPayload: TrackActionPayload<UserData, EventData> = {
-    ...rest,
-    userData: resolveWithState(state, userData),
-    eventData: resolveWithState(state, eventData)
-  };
+  if (typeof payload === 'function') {
+    newPayload = payload(state);
+  } else {
+    const { userData, eventData, ...rest } = payload;
+    newPayload = {
+      ...rest,
+      userData: resolveWithState(state, userData),
+      eventData: resolveWithState(state, eventData)
+    };
+  }
   return track(newPayload);
 };
