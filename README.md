@@ -44,7 +44,7 @@ const middlewareSettings: MiddlewareSettings = {
 import { AmplitudeAPIOptions } from '@csod-oss/tracker-vendor-amplitude';
 
 // write a function that returns a Promise that resolves to [AmplitudeAPIOptions]
-// () => Promise<AmplitudeAPIOptions>
+// ({ getState, dispatch }) => Promise<AmplitudeAPIOptions>
 const getVendorAPIOptions = () => Promise.resolve({ apiKey: 'vendor-api-key' });
 
 ```
