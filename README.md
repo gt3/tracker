@@ -16,6 +16,8 @@ While this library does not have a dependency on Redux, it aims to extend the ca
 
 If you haven't used [Redux](https://github.com/reduxjs/redux), you may want to read this [5-minute overview](https://medium.com/@nicotsou/tltr-redux-e4fc30f87e4a) first to understand the problem it solves and its core components.
 
+Code for this library is written in [TypeScript](https://www.typescriptlang.org/play/index.html) for static checking.
+
 ### 1. Install dependencies
 
 You'll need two or more packages depending on the vendor(s) you want to integrate with. To use Amplitude as an example, run the following commands in your app:
@@ -23,7 +25,7 @@ You'll need two or more packages depending on the vendor(s) you want to integrat
 - `npm install @csod-oss/tracker`
 - `npm install @csod-oss/tracker-vendor-amplitude`
 
-### 2. Create configuration
+### 2. Write configuration
 
 There are two primary configuration options that the middleware accepts:
 1. `MiddlewareSettings` - controls middleware behavior.
@@ -46,6 +48,7 @@ import { AmplitudeAPIOptions } from '@csod-oss/tracker-vendor-amplitude';
 const getVendorAPIOptions = () => Promise.resolve({ apiKey: 'vendor-api-key' });
 
 ```
+> Read more on configuration options [here](https://github.com/gt3/tracker/wiki#1-configuration).
 
 ### 3. Attach the middleware to Redux store
 
@@ -74,11 +77,15 @@ const enhancer = compose(
 export const store = createStore(rootReducer, {}, enhancer);
 ```
 
+At this point, the middleware setup is complete. Next we'll look at how to implement tracking behavior.
+
 ### 4. Create actions
 
 Create tracking actions by providing a payload to the action creator. The payload consists of two properties `userData` (user properties) and `eventData` (event properties) of type {object}.
 
-If userData or eventData contains a property with value of type function, the action will be resolved by invoking the function with current state (`store.getState()`) as argument.
+If userData or eventData contains a property with value of type function, the action will be resolved by invoking the function with current state (`store.getState()`) as argument. 
+
+You can also provide a function as the payload. The function gets called with current state and must return object of type `AnalyticsTrackAction`.
 
 ```typescript
 // import function to retrieve action creators
@@ -116,11 +123,17 @@ trackWithState({
 })
 ```
 
+`trackWithState` action gets transformed into `track` action by the middleware.
+
 ### 5. Dispatch actions
 
 Once the tracking actions are created, all that is left is to call `store.dispatch` on them. It is up to your app and your Redux setup on how `dispatch` is invoked. 
 
 For React apps, [react-redux](https://github.com/reduxjs/react-redux) is a standard way to wire up container components to Redux store. Use helpers [mapDispatchToProps](https://github.com/reduxjs/react-redux/blob/master/docs/api/connect.md#mapdispatchtoprops-object--dispatch-ownprops--object) from react-redux or [bindActionCreators](https://github.com/reduxjs/redux/blob/master/docs/api/bindActionCreators.md) from redux to hook up the dispatch.
+
+---
+
+Next, review API documentation below to gain a deeper understanding and tackle advanced use cases.
 
 ## Documentation
 - [Configuration](https://github.com/gt3/tracker/wiki)
