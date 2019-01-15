@@ -12,11 +12,7 @@ Use this library to integrate analytics vendor SDKs with your JavaScript app.
 
 ## Quick start
 
-While this library does not have a dependency on Redux, it aims to extend the capabilities of Redux for your app, to serve the intended use case.
-
-If you haven't used [Redux](https://github.com/reduxjs/redux), you may want to read this [5-minute overview](https://medium.com/@nicotsou/tltr-redux-e4fc30f87e4a) first to understand the problem it solves and its core components.
-
-Code for this library is written in [TypeScript](https://www.typescriptlang.org/play/index.html) for static checking.
+If you are new to JavaScript ecosystem, you may want to start with the [prerequisites](https://github.com/gt3/tracker/wiki).
 
 ### 1. Install dependencies
 
@@ -123,7 +119,7 @@ trackWithState({
 })
 ```
 
-`trackWithState` action gets transformed into `track` action by the middleware.
+`trackWithState` action gets transformed into `track` action by the middleware. Learn more about actions and the middleware lifecycle [here](https://github.com/gt3/tracker/wiki#4-actions-glossary).
 
 ### 5. Dispatch actions
 
@@ -136,9 +132,10 @@ For React apps, [react-redux](https://github.com/reduxjs/react-redux) is a stand
 Next, review API documentation below to gain a deeper understanding and tackle advanced use cases.
 
 ## Documentation
-- [Configuration](https://github.com/gt3/tracker/wiki)
-- [Control Tracking Behavior](https://github.com/gt3/tracker/wiki)
-- [Actions Glossary](https://github.com/gt3/tracker/wiki)
+- [Prerequisites](https://github.com/gt3/tracker/wiki#1-prerequisites)
+- [Configuration](https://github.com/gt3/tracker/wiki#2-configuration)
+- [Control Tracking Behavior](https://github.com/gt3/tracker/wiki#3-control-tracking-behavior)
+- [Actions Glossary](https://github.com/gt3/tracker/wiki#4-actions-glossary)
 
 ## License
 
