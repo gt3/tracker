@@ -8,7 +8,7 @@ export default [
   // ES
   {
     input: 'src/index.ts',
-    output: { file: 'build/index.js', format: 'cjs', indent: false },
+    output: { file: 'build/index.js', format: 'es', indent: false },
     external: [
       ...Object.keys(pkg.dependencies || {}),
       ...Object.keys(pkg.peerDependencies || {})
