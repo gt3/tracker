@@ -1,6 +1,6 @@
 {
   "name": "@csod-oss/tracker",
-  "version": "0.3.8",
+  "version": "0.4.0",
   "description": "Middleware library to integrate Redux apps with web analytics to measure and improve user experience.",
   "author": "Ankit Patel <gt3.someday@gmail.com> (https://github.com/gt3)",
   "license": "MIT",
@@ -9,12 +9,12 @@
   "main": "./build/index.js",
   "devDependencies": {
     "prettier": "1.12.1",
-    "typescript": "2.9.2",
     "rimraf": "2.6.3",
-    "rollup": "1.1.0"
+    "rollup": "1.1.0",
+    "typescript": "2.9.2"
   },
   "dependencies": {
-    "@csod-oss/tracker-common": "^0.3.8"
+    "@csod-oss/tracker-common": "^0.4.0"
   },
   "scripts": {
     "clean": "rimraf build dist",
