@@ -24,7 +24,7 @@ export default [
   {
     input: 'src/index.ts',
     output: {
-      file: 'build/tracker.min.js',
+      file: 'build/tracker-vendor-amplitude.min.js',
       format: 'umd',
       name: pkg.name,
       indent: false

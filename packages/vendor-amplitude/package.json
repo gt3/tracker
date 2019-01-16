@@ -11,11 +11,16 @@
     "@csod-oss/tracker-common": "^0.3.8",
     "@types/amplitude-js": "^4.4.0",
     "prettier": "1.12.1",
-    "typescript": "2.9.2"
+    "typescript": "2.9.2",
+    "rimraf": "2.6.3",
+    "rollup": "1.1.0"
   },
   "scripts": {
+    "clean": "rimraf build dist",
     "format": "prettier --parser typescript --single-quote --print-width 130 --write \"{src,tests}/**/*.{ts,tsx}\"",
-    "build": "npm run format && tsc -p ./"
+    "build:types": "tsc --emitDeclarationOnly",
+    "build": "npm run format && npm run build:types && rollup -c",
+    "prepare": "npm run clean"
   },
   "files": [
     "build"
