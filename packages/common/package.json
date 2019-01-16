@@ -7,6 +7,7 @@
   "repository": "github:gt3/tracker",
   "bugs": "https://github.com/gt3/tracker/issues",
   "main": "./build/index.js",
+  "unpkg": "build/tracker-common.min.js",
   "devDependencies": {
     "prettier": "1.12.1",
     "rimraf": "2.6.3",
