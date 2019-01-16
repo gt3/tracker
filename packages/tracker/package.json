@@ -21,7 +21,7 @@
     "format": "prettier --parser typescript --single-quote --print-width 130 --write \"{src,tests}/**/*.{ts,tsx}\"",
     "build:types": "tsc --emitDeclarationOnly",
     "build": "npm run format && npm run build:types && rollup -c",
-    "prepare": "npm run clean"
+    "prebuild": "npm run clean"
   },
   "files": [
     "build"
