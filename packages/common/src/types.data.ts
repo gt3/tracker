@@ -1,11 +1,13 @@
 import { SerializeableRecord, SerializeablePrimitives, Serializable, ValueThunk } from './types.generic';
 
-export type EventData = SerializeableRecord<SerializeablePrimitives> & {
-  eventName: string;
+export type EventName = string;
+
+export type EventData<T extends EventName = EventName> = SerializeableRecord<SerializeablePrimitives> & {
+  eventName: T;
 };
 
-export type EventDataThunkable = {
-  eventName: string;
+export type EventDataThunkable<T extends EventName = EventName> = {
+  eventName: T;
   [key: string]: Serializable | ValueThunk<Serializable>;
 };
 
