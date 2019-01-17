@@ -50,12 +50,12 @@ function getActionCreators<T extends EventName>(vendorKey: VendorKey) {
       type: ac.TERMINATE_ANALYTICS_USER_SESSION
     }),
 
-    internal: getInternalActionCreators<T>(prefix, () => ac)
+    internal: getInternalActionCreators<T>(prefix, () => ac as ActionCreators)
   };
   return ac;
 }
 
-function getInternalActionCreators<T extends EventName>(prefix: string, getActionCreators: () => ActionCreators<T>) {
+function getInternalActionCreators<T extends EventName>(prefix: string, getActionCreators: () => ActionCreators) {
   const ac: InternalActionCreators = {
     // command action types
     DISPATCH_PENDING_ANALYTICS_ACTIONS: `${prefix} DISPATCH_PENDING_ACTIONS`,
@@ -109,7 +109,7 @@ function getInternalActionCreators<T extends EventName>(prefix: string, getActio
     }),
     */
 
-    resolveToTrackAction: resolveToTrackAction(getActionCreators as () => ActionCreators)
+    resolveToTrackAction: resolveToTrackAction(getActionCreators)
   };
   return ac;
 }
