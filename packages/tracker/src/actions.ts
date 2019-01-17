@@ -1,12 +1,11 @@
-import { VendorKey } from '@csod-oss/tracker-common';
-import { memo1 } from '@csod-oss/tracker-common';
+import { VendorKey, EventName, memo1 } from '@csod-oss/tracker-common';
 import { resolveToTrackAction } from './action-resolvers';
 import { ActionCreators, InternalActionCreators } from './types.actions';
 
-function getActionCreators(vendorKey: VendorKey) {
+function getActionCreators<T extends EventName>(vendorKey: VendorKey) {
   const prefix = `[${vendorKey}]`;
 
-  const ac: ActionCreators = {
+  const ac: ActionCreators<T> = {
     prefix,
 
     // command action types
@@ -51,12 +50,12 @@ function getActionCreators(vendorKey: VendorKey) {
       type: ac.TERMINATE_ANALYTICS_USER_SESSION
     }),
 
-    internal: getInternalActionCreators(prefix, () => ac)
+    internal: getInternalActionCreators<T>(prefix, () => ac)
   };
   return ac;
 }
 
-function getInternalActionCreators(prefix: string, getActionCreators: () => ActionCreators) {
+function getInternalActionCreators<T extends EventName>(prefix: string, getActionCreators: () => ActionCreators<T>) {
   const ac: InternalActionCreators = {
     // command action types
     DISPATCH_PENDING_ANALYTICS_ACTIONS: `${prefix} DISPATCH_PENDING_ACTIONS`,
@@ -110,10 +109,11 @@ function getInternalActionCreators(prefix: string, getActionCreators: () => Acti
     }),
     */
 
-    resolveToTrackAction: resolveToTrackAction(getActionCreators)
+    resolveToTrackAction: resolveToTrackAction(getActionCreators as () => ActionCreators)
   };
   return ac;
 }
 
-const memod: (vendorKey: VendorKey) => ActionCreators = memo1(getActionCreators);
+const memod: { <T extends EventName>(vendorKey: VendorKey): ActionCreators<T> } = memo1(getActionCreators);
+
 export { memod as getActionCreators };

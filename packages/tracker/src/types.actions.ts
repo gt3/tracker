@@ -1,5 +1,12 @@
-import { UserData, EventData, UserDataThunkable, EventDataThunkable, ValueThunk } from '@csod-oss/tracker-common';
-import { VendorAPIOptions } from '@csod-oss/tracker-common';
+import {
+  UserData,
+  EventData,
+  UserDataThunkable,
+  EventDataThunkable,
+  ValueThunk,
+  EventName,
+  VendorAPIOptions
+} from '@csod-oss/tracker-common';
 
 export type ActionTypeKeys = keyof ActionTypes & InternalActionTypes;
 
@@ -15,13 +22,13 @@ type CommandActionTypes = {
 
 export type ActionTypes = CommandActionTypes;
 
-export type ActionCreators = ActionTypes & {
+export type ActionCreators<T extends EventName = EventName> = ActionTypes & {
   prefix: string;
   load: () => AnalyticsAction;
   init: <T extends VendorAPIOptions>(payload: T) => AnalyticsAction;
-  track: (payload: TrackActionPayload<UserData, EventData>) => AnalyticsTrackAction;
+  track: (payload: TrackActionPayload<UserData, EventData<T>>) => AnalyticsTrackAction;
   trackWithState: (
-    payload: TrackActionPayload<UserDataThunkable, EventDataThunkable> | ValueThunk<TrackActionPayload<UserData, EventData>>
+    payload: TrackActionPayload<UserDataThunkable, EventDataThunkable<T>> | ValueThunk<TrackActionPayload<UserData, EventData<T>>>
   ) => AnalyticsTrackActionThunkable;
   pauseTracking: () => AnalyticsAction;
   resumeTracking: () => AnalyticsAction;
