@@ -50,12 +50,12 @@ function getActionCreators<T extends EventName>(vendorKey: VendorKey) {
       type: ac.TERMINATE_ANALYTICS_USER_SESSION
     }),
 
-    internal: getInternalActionCreators<T>(prefix, () => ac as ActionCreators)
+    internal: getInternalActionCreators(prefix, () => ac as ActionCreators)
   };
   return ac;
 }
 
-function getInternalActionCreators<T extends EventName>(prefix: string, getActionCreators: () => ActionCreators) {
+function getInternalActionCreators(prefix: string, getActionCreators: () => ActionCreators) {
   const ac: InternalActionCreators = {
     // command action types
     DISPATCH_PENDING_ANALYTICS_ACTIONS: `${prefix} DISPATCH_PENDING_ACTIONS`,
