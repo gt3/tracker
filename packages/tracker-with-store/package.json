@@ -1,6 +1,6 @@
 {
   "name": "@csod-oss/tracker-with-store",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Middleware library to integrate Redux apps with web analytics to measure and improve user experience.",
   "author": "Ankit Patel <gt3.someday@gmail.com> (https://github.com/gt3)",
   "license": "MIT",
