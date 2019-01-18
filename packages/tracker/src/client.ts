@@ -94,9 +94,9 @@ export class Client<T extends VendorAPIOptions> {
     const { setPendingAction, trackDone, trackFail } = this._ac.internal;
     // check if not initialized, add action to processing queue
     if (!this.initCompleted) return Promise.resolve(setPendingAction(action));
-    const { preventUserIdHashing } = this._appSettings;
+    const { preventUserIdAnonymization } = this._appSettings;
     const { userData, eventData } = action.payload;
-    return (preventUserIdHashing || !userData ? Promise.resolve(userData) : hashUserId(userData))
+    return (preventUserIdAnonymization || !userData ? Promise.resolve(userData) : hashUserId(userData))
       .then((userData: any) => this._vendorAPI.track(userData, eventData))
       .then(() => trackDone(action))
       .catch((err: Error) => trackFail(action, err || new Error(`Could not send track action.`)));
