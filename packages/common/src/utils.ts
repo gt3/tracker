@@ -1,9 +1,12 @@
 import { Script, ScriptByEnvironment } from './types.api';
+import { UserData } from './types.data';
 
 let _isDomReady = false,
   loadedScripts = new Set();
 const _ctx = Function('return this;')();
 export const isBrowser = _ctx && _ctx === _ctx.window;
+const _crypto = isBrowser && (_ctx.crypto || _ctx.msCrypto);
+const _isIE = _crypto ? _crypto === _ctx.msCrypto : false;
 export const isLocalhost = isBrowser && ['localhost', '127.0.0.1', ''].indexOf(_ctx.location.hostname.toLowerCase()) !== -1;
 
 export function scriptExists(scriptMap: ScriptByEnvironment) {
@@ -124,3 +127,55 @@ export const isLocalhostTrackingEnabled = () => !!_localhostTracking.status();
     });
   }
 })();
+
+export function digest(msg: any) {
+  const algo = 'SHA-1';
+  msg = toArrayBuffer(msg);
+  if (_isIE) {
+    return digestIE(msg);
+  } else {
+    return _crypto.subtle.digest(algo, msg).then((msgDigest: ArrayBuffer) => toString(msgDigest));
+  }
+}
+
+export function hashUserId(userData: UserData): Promise<UserData> {
+  if (!userData.userId || !crypto) return Promise.resolve(userData);
+  return digest(userData.userId).then((hashedUserId: string) => {
+    return { ...userData, userId: hashedUserId };
+  });
+}
+
+function digestIE(msg: string) {
+  const algo = 'SHA-1';
+  return new Promise((resolve, reject) => {
+    let ieOp = _crypto.subtle.digest({ name: algo }, msg);
+    ieOp.onerror = () => {
+      reject(new Error(`Could not create hash: ${msg}`));
+    };
+    ieOp.oncomplete = (e: any) => {
+      // @ts-ignore
+      let msgDigest = e.target.result;
+      resolve(toString(msgDigest));
+    };
+  });
+}
+
+function toArrayBuffer(str: String): ArrayBuffer {
+  if (!_isIE) return new _ctx.TextEncoder().encode(str);
+  var output = new Uint8Array(str.length),
+    p = 0;
+  for (var i = 0; i < str.length; i++) {
+    var curr = str.charCodeAt(i);
+    if (curr > 0xff) {
+      output[p++] = curr & 0xff;
+      curr >>= 8;
+    }
+    output[p++] = curr;
+  }
+  return output.buffer;
+}
+
+function toString(buffer: ArrayBuffer) {
+  // @ts-ignore
+  return String.fromCharCode.apply(null, new Uint8Array(buffer));
+}

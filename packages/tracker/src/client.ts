@@ -4,7 +4,8 @@ import {
   injectScript,
   scriptExists,
   isLocalhost,
-  isLocalhostTrackingEnabled
+  isLocalhostTrackingEnabled,
+  hashUserId
 } from '@csod-oss/tracker-common';
 import { VendorAPI, ScriptByEnvironment, VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import { ActionCreators, AnalyticsAction, AnalyticsTrackAction } from './types.actions';
@@ -91,11 +92,14 @@ export class Client<T extends VendorAPIOptions> {
 
   track(action: AnalyticsTrackAction) {
     const { setPendingAction, trackDone, trackFail } = this._ac.internal;
-    // check if not initialized, add action to processing queue .. needed?
+    // check if not initialized, add action to processing queue
     if (!this.initCompleted) return Promise.resolve(setPendingAction(action));
-    return this._vendorAPI
-      .track(action.payload.userData, action.payload.eventData)
-      .then(trackDone, () => trackFail(new Error('Could not send track action.')));
+    const { preventUserIdHashing } = this._appSettings;
+    const { userData, eventData } = action.payload;
+    return (preventUserIdHashing || !userData ? Promise.resolve(userData) : hashUserId(userData))
+      .then((userData: any) => this._vendorAPI.track(userData, eventData))
+      .then(() => trackDone(action))
+      .catch((err: Error) => trackFail(action, err || new Error(`Could not send track action.`)));
   }
 
   controlTracking(value: boolean) {
