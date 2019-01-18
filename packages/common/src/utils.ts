@@ -128,13 +128,13 @@ export const isLocalhostTrackingEnabled = () => !!_localhostTracking.status();
   }
 })();
 
-export function digest(msg: any) {
+export function digest(msg: string) {
   const algo = 'SHA-1';
-  msg = toArrayBuffer(msg);
+  const msgBuffer = toArrayBuffer(msg);
   if (_isIE) {
-    return digestIE(msg);
+    return digestIE(msgBuffer);
   } else {
-    return _crypto.subtle.digest(algo, msg).then((msgDigest: ArrayBuffer) => toString(msgDigest));
+    return _crypto.subtle.digest(algo, msgBuffer).then((msgDigest: ArrayBuffer) => toString(msgDigest));
   }
 }
 
@@ -145,12 +145,12 @@ export function hashUserId(userData: UserData): Promise<UserData> {
   });
 }
 
-function digestIE(msg: string) {
+function digestIE(msg: ArrayBuffer) {
   const algo = 'SHA-1';
   return new Promise((resolve, reject) => {
     let ieOp = _crypto.subtle.digest({ name: algo }, msg);
     ieOp.onerror = () => {
-      reject(new Error(`Could not create hash: ${msg}`));
+      reject(new Error(`Could not create hash.`));
     };
     ieOp.oncomplete = (e: any) => {
       // @ts-ignore
