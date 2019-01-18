@@ -46,3 +46,5 @@ export class TrackerWithStore<T extends VendorAPIOptions> {
     TrackerWithStore.store = createStore(reducer, {}, enhancer);
   }
 }
+
+export * from '@csod-oss/tracker';
