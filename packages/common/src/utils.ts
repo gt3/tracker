@@ -138,8 +138,8 @@ export function digest(msg: any) {
   }
 }
 
-export function hashUserId(userData?: UserData, preventUserIdHashing?: boolean): Promise<UserData|undefined> {
-  if (preventUserIdHashing || !userData || !userData.userId || !crypto) return Promise.resolve(userData);
+export function hashUserId(userData: UserData): Promise<UserData> {
+  if (!userData.userId || !crypto) return Promise.resolve(userData);
   return digest(userData.userId).then((hashedUserId: string) => {
     return { ...userData, userId: hashedUserId };
   });

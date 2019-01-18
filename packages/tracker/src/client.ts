@@ -92,15 +92,14 @@ export class Client<T extends VendorAPIOptions> {
 
   track(action: AnalyticsTrackAction) {
     const { setPendingAction, trackDone, trackFail } = this._ac.internal;
-    // check if not initialized, add action to processing queue .. needed?
+    // check if not initialized, add action to processing queue
     if (!this.initCompleted) return Promise.resolve(setPendingAction(action));
     const { preventUserIdHashing } = this._appSettings;
-    return hashUserId(action.payload.userData, preventUserIdHashing)
-      .then((userData: UserData) => this._vendorAPI.track(userData, action.payload.eventData))
-  
-    return this._vendorAPI
-      .track(action.payload.userData, action.payload.eventData)
-      .then(trackDone, () => trackFail(new Error('Could not send track action.')));
+    const { userData, eventData } = action.payload;
+    return (preventUserIdHashing || !userData ? Promise.resolve(userData) : hashUserId(userData))
+      .then((userData: any) => this._vendorAPI.track(userData, eventData))
+      .then(() => trackDone(action))
+      .catch((err: Error) => trackFail(action, err || new Error(`Could not send track action.`)));
   }
 
   controlTracking(value: boolean) {

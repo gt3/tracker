@@ -84,13 +84,15 @@ function getInternalActionCreators(prefix: string, getActionCreators: () => Acti
       payload: err
     }),
 
-    trackDone: () => ({
-      type: ac.TRACK_ANALYTICS_DONE
+    trackDone: action => ({
+      type: ac.TRACK_ANALYTICS_DONE,
+      meta: action
     }),
 
-    trackFail: err => ({
+    trackFail: (action, err) => ({
       type: ac.TRACK_ANALYTICS_ERR,
-      payload: err
+      payload: err,
+      meta: action
     }),
 
     dispatchPendingActions: () => ({
