@@ -1,0 +1,37 @@
+{
+  "name": "@csod-oss/tracker-with-store",
+  "version": "0.5.2",
+  "description": "Middleware library to integrate Redux apps with web analytics to measure and improve user experience.",
+  "author": "Ankit Patel <gt3.someday@gmail.com> (https://github.com/gt3)",
+  "license": "MIT",
+  "repository": "github:gt3/tracker",
+  "bugs": "https://github.com/gt3/tracker/issues",
+  "main": "./build/index.js",
+  "unpkg": "build/tracker.min.js",
+  "devDependencies": {
+    "prettier": "1.12.1",
+    "rimraf": "2.6.3",
+    "rollup": "1.1.0",
+    "typescript": "2.9.2"
+  },
+  "dependencies": {
+    "@csod-oss/tracker": "^0.5.2",
+    "@csod-oss/tracker-common": "^0.5.2",
+    "redux": "4.0.1"
+  },
+  "scripts": {
+    "clean": "rimraf build dist",
+    "format": "prettier --parser typescript --single-quote --print-width 130 --write \"{src,tests}/**/*.{ts,tsx}\"",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build": "npm run format && npm run build:types && rollup -c",
+    "prebuild": "npm run clean"
+  },
+  "files": [
+    "build"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "http://registry.npmjs.org"
+  },
+  "keywords": []
+}
