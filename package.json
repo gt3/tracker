@@ -21,6 +21,7 @@
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
+    "postinstall": "npm run bootstrap",
     "clean": "lerna clean",
     "build": "lerna run build",
     "push": "lerna publish --registry http://registry.npmjs.org"
