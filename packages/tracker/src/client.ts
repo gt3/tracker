@@ -97,9 +97,13 @@ export class Client<T extends VendorAPIOptions> {
     const { preventUserIdAnonymization } = this._appSettings;
     const { userData, eventData } = action.payload;
     return (preventUserIdAnonymization || !userData ? Promise.resolve(userData) : hashUserId(userData))
-      .then((userData: any) => this._vendorAPI.track(userData, eventData))
-      .then(() => trackDone(action))
-      .catch((err: Error) => trackFail(action, err || new Error(`Could not send track action.`)));
+      .then((userData: any) => this._vendorAPI.track(userData, eventData).then(() => userData))
+      .then((userData: any) => {
+        return userData && userData !== action.payload.userData
+          ? trackDone({ action, anonymizedUserId: true })
+          : trackDone({ action });
+      })
+      .catch((err: Error) => trackFail({ action }, err || new Error(`Could not send track action.`)));
   }
 
   controlTracking(value: boolean) {

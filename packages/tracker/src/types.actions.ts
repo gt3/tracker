@@ -11,13 +11,13 @@ import {
 export type ActionTypeKeys = keyof ActionTypes & InternalActionTypes;
 
 type CommandActionTypes = {
-  LOAD_ANALYTICS: string;
-  INIT_ANALYTICS: string;
-  TRACK_ANALYTICS: string;
-  TRACK_ANALYTICS_WITH_STATE: string;
-  PAUSE_ANALYTICS_TRACKING: string;
-  RESUME_ANALYTICS_TRACKING: string;
-  TERMINATE_ANALYTICS_USER_SESSION: string;
+  LOAD: string;
+  INIT: string;
+  TRACK: string;
+  TRACK_WITH_STATE: string;
+  PAUSE_TRACKING: string;
+  RESUME_TRACKING: string;
+  TERMINATE_USER_SESSION: string;
 };
 
 export type ActionTypes = CommandActionTypes;
@@ -37,20 +37,20 @@ export type ActionCreators<T extends EventName = EventName> = ActionTypes & {
 };
 
 type InternalCommandActionTypes = {
-  DISPATCH_PENDING_ANALYTICS_ACTIONS: string;
+  DISPATCH_PENDING_ACTIONS: string;
 };
 
 type InternalEventActionTypes = {
-  LOAD_ANALYTICS_DONE: string;
-  INIT_ANALYTICS_DONE: string;
-  INIT_ANALYTICS_ERR: string;
-  TRACK_ANALYTICS_DONE: string;
-  TRACK_ANALYTICS_ERR: string;
-  // BUFFERED_ANALYTICS_ACTIONS: string;
+  LOAD_DONE: string;
+  INIT_DONE: string;
+  INIT_ERR: string;
+  TRACK_DONE: string;
+  TRACK_ERR: string;
+  // BUFFERED_ACTIONS: string;
 };
 
 type InternalDocumentActionTypes = {
-  SET_PENDING_ANALYTICS_ACTION: string;
+  SET_PENDING_ACTION: string;
 };
 
 export type InternalActionTypes = InternalCommandActionTypes & InternalEventActionTypes & InternalDocumentActionTypes;
@@ -59,8 +59,8 @@ export type InternalActionCreators = InternalActionTypes & {
   loadDone: () => AnalyticsAction;
   initDone: () => AnalyticsAction;
   initFail: (err?: any) => AnalyticsAction;
-  trackDone: (action: AnalyticsTrackAction) => AnalyticsAction;
-  trackFail: (action: AnalyticsTrackAction, err?: any) => AnalyticsAction;
+  trackDone: (meta: { action: AnalyticsTrackAction; anonymizedUserId?: boolean }) => AnalyticsAction;
+  trackFail: (meta: { action: AnalyticsTrackAction }, err?: any) => AnalyticsAction;
   dispatchPendingActions: () => AnalyticsAction;
   setPendingAction: (action: AnalyticsAction) => AnalyticsAction;
   // bufferedActions: (action: AnalyticsAction[]) => AnalyticsAction;
