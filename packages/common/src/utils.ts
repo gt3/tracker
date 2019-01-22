@@ -146,7 +146,7 @@ export function hashUserId(userData: UserData): Promise<UserData> {
 }
 
 function digestIE(msg: ArrayBuffer) {
-  const algo = 'SHA-1';
+  const algo = 'SHA-256';
   return new Promise((resolve, reject) => {
     let ieOp = _crypto.subtle.digest({ name: algo }, msg);
     ieOp.onerror = () => {
