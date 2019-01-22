@@ -129,7 +129,7 @@ export const isLocalhostTrackingEnabled = () => !!_localhostTracking.status();
 })();
 
 export function digest(msg: string) {
-  const algo = 'SHA-1';
+  const algo = 'SHA-256';
   const msgBuffer = toArrayBuffer(msg);
   if (_isIE) {
     return digestIE(msgBuffer);
