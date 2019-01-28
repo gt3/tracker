@@ -10,7 +10,7 @@
   "unpkg": "build/tracker-vendor-amplitude.min.js",
   "devDependencies": {
     "@csod-oss/tracker-common": "^0.5.11",
-    "@types/amplitude-js": "^4.4.0",
+    "@types/amplitude-js": "4.4.1",
     "prettier": "1.12.1",
     "rimraf": "2.6.3",
     "rollup": "1.1.0",
