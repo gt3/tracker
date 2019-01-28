@@ -138,10 +138,17 @@ export function digest(msg: string) {
   }
 }
 
-export function hashUserId(userData: UserData): Promise<UserData> {
-  if (!userData.userId || !crypto) return Promise.resolve(userData);
-  return digest(userData.userId).then((hashedUserId: string) => {
-    return { ...userData, userId: hashedUserId };
+export function hashUserData(userData: UserData, keys = ['userId']): Promise<UserData> {
+  keys = keys.filter(key => userData.hasOwnProperty(key));
+  if (keys.length === 0 || !crypto) return Promise.resolve(userData);
+  return Promise.all(keys.map(key => digest(`${userData[key]}`))).then(hashed => {
+    return hashed.reduce(
+      (acc, val, i) => {
+        acc[keys[i]] = val;
+        return acc;
+      },
+      { ...userData }
+    );
   });
 }
 

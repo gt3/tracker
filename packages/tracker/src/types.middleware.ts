@@ -11,6 +11,6 @@ export type GetVendorAPIOptions<T> = (store: PartialStore) => Promise<T | null |
 export type MiddlewareSettings<V extends EnvType = Env> = {
   env: V;
   preventAutoLoadInit?: boolean;
-  preventUserIdAnonymization?: boolean;
+  anonymizeUserData?: string[];
   relayActions?: boolean | Partial<Record<ActionTypeKeys, boolean>>;
 };
