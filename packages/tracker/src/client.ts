@@ -5,7 +5,7 @@ import {
   scriptExists,
   isLocalhost,
   isLocalhostTrackingEnabled,
-  hashUserId
+  hashUserData
 } from '@csod-oss/tracker-common';
 import { VendorAPI, ScriptByEnvironment, VendorAPIOptions, VendorAPIWrapper } from '@csod-oss/tracker-common';
 import { ActionCreators, AnalyticsAction, AnalyticsTrackAction } from './types.actions';
@@ -94,16 +94,18 @@ export class Client<T extends VendorAPIOptions> {
     const { setPendingAction, trackDone, trackFail } = this._ac.internal;
     // check if not initialized, add action to processing queue
     if (!this.initCompleted) return Promise.resolve(setPendingAction(action));
-    const { preventUserIdAnonymization } = this._appSettings;
+    const { anonymizeUserData } = this._appSettings;
     const { userData, eventData } = action.payload;
-    return (preventUserIdAnonymization || !userData ? Promise.resolve(userData) : hashUserId(userData))
-      .then((userData: any) => this._vendorAPI.track(userData, eventData).then(() => userData))
-      .then((userData: any) => {
-        return userData && userData !== action.payload.userData
-          ? trackDone({ action, anonymizedUserId: true })
-          : trackDone({ action });
-      })
-      .catch((err: Error) => trackFail({ action }, err || new Error(`Could not send track action.`)));
+    return !userData
+      ? Promise.resolve(userData)
+      : hashUserData(userData, anonymizeUserData)
+          .then((userData: any) => this._vendorAPI.track(userData, eventData).then(() => userData))
+          .then((userData: any) => {
+            return userData && userData !== action.payload.userData
+              ? trackDone({ action, anonymizedUserData: true })
+              : trackDone({ action });
+          })
+          .catch((err: Error) => trackFail({ action }, err || new Error(`Could not send track action.`)));
   }
 
   controlTracking(value: boolean) {
