@@ -96,16 +96,18 @@ export class Client<T extends VendorAPIOptions> {
     if (!this.initCompleted) return Promise.resolve(setPendingAction(action));
     const { anonymizeUserData } = this._appSettings;
     const { userData, eventData } = action.payload;
-    return !userData
-      ? Promise.resolve(userData)
-      : hashUserData(userData, anonymizeUserData)
-          .then((userData: any) => this._vendorAPI.track(userData, eventData).then(() => userData))
-          .then((userData: any) => {
-            return userData && userData !== action.payload.userData
-              ? trackDone({ action, anonymizedUserData: true })
-              : trackDone({ action });
-          })
-          .catch((err: Error) => trackFail({ action }, err || new Error(`Could not send track action.`)));
+    let res;
+    if (userData) {
+      // anonymize userData based on anonymizeUserData
+      res = hashUserData(userData, anonymizeUserData)
+        .then((userData: any) => this._vendorAPI.track(userData, eventData).then(() => userData))
+        .then((userData: any) => {
+          return userData !== action.payload.userData ? trackDone({ action, anonymizedUserData: true }) : trackDone({ action });
+        });
+    } else {
+      res = this._vendorAPI.track(userData, eventData).then(() => trackDone({ action }));
+    }
+    return res.catch((err: Error) => trackFail({ action }, err || new Error(`Could not send track action.`)));
   }
 
   controlTracking(value: boolean) {
