@@ -10,7 +10,7 @@ export function createTrackerMiddleware<T extends VendorAPIOptions>(
   getAPIOptions: GetVendorAPIOptions<T>,
   ac: ActionCreators
 ) {
-  const { init, LOAD, INIT, TRACK, TRACK_WITH_STATE, PAUSE_TRACKING, RESUME_TRACKING, TERMINATE_USER_SESSION } = ac;
+  const { init, LOAD, INIT, TRACK, TRACK_WITH_STATE, PAUSE_TRACKING, RESUME_TRACKING, TERMINATE_USER_SESSION, prefix } = ac;
   const {
     resolveToTrackAction,
     LOAD_DONE,
@@ -24,8 +24,7 @@ export function createTrackerMiddleware<T extends VendorAPIOptions>(
     _client.scheduleLoadDispatch().then(store.dispatch);
     const { bufferActions, resolveBufferedActions } = new DispatchBuffer();
     return (next: any) => (action: AnalyticsAction) => {
-      if (!action || !action.type) return next(action);
-
+      if (!action || !action.type || action.type.indexOf(prefix) !== 0) return next(action);
       if (action.type === LOAD) {
         bufferActions(_client.load());
       } else if (action.type === LOAD_DONE) {
