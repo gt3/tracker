@@ -45,8 +45,10 @@ export class Client<T extends VendorAPIOptions> {
     return new Promise((resolve, reject) => {
       if (!this.loadInvoked && !preventAutoLoadInit && isBrowser) {
         onDomReady().then(() => (!this.loadInvoked ? resolve() : reject()), () => reject());
-      } else reject();
-    }).then(this._ac.load);
+      } else {
+        reject();
+      }
+    }).then(this._ac.load, () => null);
   }
 
   load() {
