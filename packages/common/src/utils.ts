@@ -27,8 +27,8 @@ export function scriptExists(scriptMap: ScriptByEnvironment) {
 
 export function onDomReady() {
   return new Promise((resolve, reject) => {
-    if (_isDomReady) return resolve();
     if (!isBrowser) return reject(new Error('Attempt to invoke dom functionality in a non-browser environment.'));
+    if (_isDomReady || document.readyState === 'complete') return resolve();
     document.addEventListener('DOMContentLoaded', () => {
       _isDomReady = true;
       resolve();

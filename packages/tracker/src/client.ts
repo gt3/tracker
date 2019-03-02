@@ -44,7 +44,7 @@ export class Client<T extends VendorAPIOptions> {
     const { preventAutoLoadInit } = this._appSettings;
     return new Promise((resolve, reject) => {
       if (!this.loadInvoked && !preventAutoLoadInit && isBrowser) {
-        onDomReady().then(() => (!this.loadInvoked ? resolve() : reject()));
+        onDomReady().then(() => (!this.loadInvoked ? resolve() : reject()), () => reject());
       } else reject();
     }).then(this._ac.load);
   }
