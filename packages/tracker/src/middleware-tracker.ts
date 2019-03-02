@@ -21,7 +21,7 @@ export function createTrackerMiddleware<T extends VendorAPIOptions>(
   } = ac.internal;
   const _client = new Client(appSettings, API, ac);
   return (store: PartialStore) => {
-    _client.scheduleLoadDispatch().then(store.dispatch);
+    _client.scheduleLoadDispatch().then(store.dispatch, () => {});
     const { bufferActions, resolveBufferedActions } = new DispatchBuffer();
     return (next: any) => (action: AnalyticsAction) => {
       if (!action || !action.type || action.type.indexOf(prefix) !== 0) return next(action);

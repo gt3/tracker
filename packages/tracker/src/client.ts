@@ -48,7 +48,7 @@ export class Client<T extends VendorAPIOptions> {
       } else {
         reject();
       }
-    }).then(this._ac.load, () => null);
+    }).then(this._ac.load);
   }
 
   load() {
