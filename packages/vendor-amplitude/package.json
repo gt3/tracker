@@ -1,6 +1,6 @@
 {
   "name": "@csod-oss/tracker-vendor-amplitude",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "Integration with Amplitude SDK for product analytics tracker: @csod-oss/tracker",
   "author": "Ankit Patel <gt3.someday@gmail.com> (https://github.com/gt3)",
   "license": "MIT",
@@ -9,7 +9,7 @@
   "main": "./build/index.js",
   "unpkg": "build/tracker-vendor-amplitude.min.js",
   "devDependencies": {
-    "@csod-oss/tracker-common": "^0.6.5",
+    "@csod-oss/tracker-common": "^0.6.6",
     "@types/amplitude-js": "4.4.1",
     "prettier": "1.12.1",
     "rimraf": "2.6.3",

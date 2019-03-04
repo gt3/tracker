@@ -1,6 +1,6 @@
 {
   "name": "@csod-oss/tracker-with-store",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "Store-ready version of tracker for non-Redux apps.",
   "author": "Ankit Patel <gt3.someday@gmail.com> (https://github.com/gt3)",
   "license": "MIT",
@@ -15,8 +15,8 @@
     "typescript": "2.9.2"
   },
   "dependencies": {
-    "@csod-oss/tracker": "^0.6.5",
-    "@csod-oss/tracker-common": "^0.6.5",
+    "@csod-oss/tracker": "^0.6.6",
+    "@csod-oss/tracker-common": "^0.6.6",
     "redux": "4.0.1"
   },
   "scripts": {
