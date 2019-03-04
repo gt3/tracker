@@ -32,8 +32,13 @@ export class Client<T extends VendorAPIOptions> {
     return typeof this._times.loadStart !== 'undefined';
   }
 
+  get loadCompletedExternally() {
+    const { getInstance } = this._vendorAPI;
+    return getInstance() || scriptExists(this._allScripts);
+  }
+
   get loadCompleted() {
-    return typeof this._times.loadEnd !== 'undefined';
+    return typeof this._times.loadEnd !== 'undefined' || this.loadCompletedExternally;
   }
 
   get initCompleted() {
@@ -54,9 +59,9 @@ export class Client<T extends VendorAPIOptions> {
   load() {
     if (this.loadInvoked) return Promise.reject(new Error('Load already called.'));
     this._times.loadStart = new Date().getTime();
-    const { getScript, getInstance } = this._vendorAPI;
+    const { getScript } = this._vendorAPI;
     const { loadDone } = this._ac.internal;
-    if (getInstance() || scriptExists(this._allScripts)) return Promise.resolve(loadDone());
+    if (this.loadCompleted) return Promise.resolve(loadDone());
     return Promise.all(getScript().map(injectScript)).then(loadDone);
   }
 
