@@ -140,7 +140,7 @@ export function digest(msg: string) {
 
 export function hashUserData(userData: UserData, keys = ['userId']): Promise<UserData> {
   keys = keys.filter(key => userData.hasOwnProperty(key));
-  if (keys.length === 0 || !crypto) return Promise.resolve(userData);
+  if (keys.length === 0 || !_crypto) return Promise.resolve(userData);
   return Promise.all(keys.map(key => digest(`${userData[key]}`))).then(hashed => {
     return hashed.reduce(
       (acc, val, i) => {
