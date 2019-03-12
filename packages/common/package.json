@@ -1,6 +1,6 @@
 {
   "name": "@csod-oss/tracker-common",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "Common set of types and utility functions for tracker library.",
   "author": "Ankit Patel <gt3.someday@gmail.com> (https://github.com/gt3)",
   "license": "MIT",
