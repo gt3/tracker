@@ -7,6 +7,7 @@ const _ctx = Function('return this;')();
 export const isBrowser = _ctx && _ctx === _ctx.window;
 const _crypto = isBrowser && (_ctx.crypto || _ctx.msCrypto);
 const _isIE = _crypto ? _crypto === _ctx.msCrypto : false;
+const _isTextEncoderSupported = isBrowser && typeof _ctx.TextEncoder !== 'undefined';
 export const isLocalhost = isBrowser && ['localhost', '127.0.0.1', ''].indexOf(_ctx.location.hostname.toLowerCase()) !== -1;
 
 export function scriptExists(scriptMap: ScriptByEnvironment) {
@@ -168,7 +169,7 @@ function digestIE(msg: ArrayBuffer) {
 }
 
 function toArrayBuffer(str: String): ArrayBuffer {
-  if (!_isIE) return new _ctx.TextEncoder().encode(str);
+  if (_isTextEncoderSupported) return new _ctx.TextEncoder().encode(str);
   var output = new Uint8Array(str.length),
     p = 0;
   for (var i = 0; i < str.length; i++) {
