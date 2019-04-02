@@ -3,7 +3,7 @@ import { UserData } from './types.data';
 
 let _isDomReady = false,
   loadedScripts = new Set();
-const _ctx = Function('return this;')();
+const _ctx = getGlobal();
 export const isBrowser = _ctx && _ctx === _ctx.window;
 const _crypto = isBrowser && (_ctx.crypto || _ctx.msCrypto);
 const _isIE = _crypto ? _crypto === _ctx.msCrypto : false;
@@ -191,4 +191,20 @@ function toHex(byte: number) {
 
 function toString(buffer: ArrayBuffer) {
   return Array.prototype.map.call(new Uint8Array(buffer), toHex).join('');
+}
+
+/**** internal helpers ****/
+
+// globalThis: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis
+function getGlobal(): any {
+  if (typeof self !== 'undefined') {
+    return self;
+  }
+  if (typeof window !== 'undefined') {
+    return window;
+  }
+  if (typeof global !== 'undefined') {
+    return global;
+  }
+  throw new Error('unable to locate global object');
 }
