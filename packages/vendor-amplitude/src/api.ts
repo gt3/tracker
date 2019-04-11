@@ -13,9 +13,9 @@ export class AmplitudeAPI implements VendorAPI<AmplitudeAPIOptions> {
     ],
     production: [
       {
-        src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2-min.js'
-        // integrity: 'sha384-f1maK8oMrCMNEWGGg3Hx3dMTOQBbXr4e1ZIjB/J0TcgJx5UeE0g5S5PM5BbWPe4E',
-        // crossorigin: 'anonymous'
+        src: 'https://cdn.amplitude.com/libs/amplitude-4.5.2-min.js',
+        integrity: 'sha384-f1maK8oMrCMNEWGGg3Hx3dMTOQBbXr4e1ZIjB/J0TcgJx5UeE0g5S5PM5BbWPe4E',
+        crossorigin: 'anonymous'
       }
     ]
   };
