@@ -38,7 +38,7 @@ export function onDomReady() {
 }
 
 export function injectScript(script: Script) {
-  const { src, integrity, crossorigin = 'anonymous' } = script;
+  const { src, integrity, crossOrigin = 'anonymous' } = script;
   return new Promise((resolve, reject) => {
     if (!isBrowser) {
       return reject(new Error('Attempt to invoke dom functionality in a non-browser environment.'));
@@ -61,7 +61,7 @@ export function injectScript(script: Script) {
     script.onerror = failed;
     if (integrity) {
       script.integrity = integrity;
-      script.crossorigin = crossorigin;
+      script.crossOrigin = crossOrigin;
     }
     document.head.appendChild(script);
   });

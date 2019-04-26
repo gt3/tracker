@@ -12,7 +12,7 @@ export type VendorAPIOptions = {
 export type Script = {
   src: string;
   integrity?: string;
-  crossorigin?: string;
+  crossOrigin?: string;
 };
 
 export type ScriptByEnvironment<V extends EnvType = Env> = Record<V, Script[]>;
